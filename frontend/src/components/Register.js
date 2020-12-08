@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Input, Layout, Form, Button, Carousel, Row, Col } from 'antd';
+import { Card, Input, Layout, Form, Button, Row, Col } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { StyleSheet, css } from 'aphrodite';
 
@@ -13,42 +13,20 @@ const styles = StyleSheet.create({
     card: {
         // height: '40vh',
         width: '60vh',
-        float: 'right',
         marginTop: '15vh',
-        marginRight: '10vh'
     },
     header: {
         marginBottom: '5vh'
     }
 })
 
-const contentStyle = {
-    height: '25vh',
-    color: '#fff',
-    lineHeight: '25vh',
-    textAlign: 'center',
-    background: '#364d79',
-    marginTop: '30vh',
-  };
 
-function HabitCarousel() {
-    return (
-        <Carousel autoplay>
-            <div>
-                <h3 style={contentStyle}>1</h3>
-            </div>
-            <div>
-                <h3 style={contentStyle}>2</h3>
-            </div>
-            <div>
-                <h3 style={contentStyle}>3</h3>
-            </div>
-            <div>
-                <h3 style={contentStyle}>4</h3>
-            </div>
-        </Carousel>
-    )
-}
+const headerStyle = {
+    fontFamily: '"Krona One", Sans-serif',
+    fontSize: '24pt',
+    color: '#fff',
+};  
+
 
 export default function Register() {
 
@@ -63,15 +41,13 @@ export default function Register() {
     return (
         <Layout className={css(styles.wrapper)} >
             <Header>
+                <h1 style={headerStyle}>Habit Tracker</h1>
                 <div className="logo" />
             </Header>
             <Content style={{ padding: '0 50px' }}>
                 <Row>
-                    <Col span={3} />
-                    <Col span={7} >
-                        < HabitCarousel />      
-                    </Col>
-                    <Col span={14} >
+                    <Col span={8}/>
+                    <Col span={14}>
                         <Card className={css(styles.card)}>
                         <Meta
                             title="Sign Up"
@@ -119,7 +95,7 @@ export default function Register() {
                                     </Button>
                                 </Form.Item>
                                 <p>
-                                    Already have an Account? <a href="https://www.google.com/" >Log in</a>
+                                    Already have an Account? <a href="/" >Log in</a>
                                 </p>
                             </Form>
                         </Card>

@@ -1,9 +1,23 @@
-import Register from './components/Login/Register';
+import Register from './components/Register';
+import Login from './components/Login';
+import { BrowserRouter as Router,
+         Switch,
+         Route
+} from 'react-router-dom';
 import 'antd/dist/antd.css';
 
 function App() {
   return (
-    <Register />
+    <Router>
+      <Switch>
+        <Route exact path="/">
+          <Login />
+        </Route>
+        <Route exact path="/register">
+          <Register />
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 
