@@ -1,4 +1,3 @@
-import Register from './components/Register';
 import Login from './components/Login';
 import { BrowserRouter as Router,
          Switch,
@@ -12,9 +11,6 @@ function App() {
       <Switch>
         <Route exact path="/">
           <Login />
-        </Route>
-        <Route exact path="/register">
-          <Register />
         </Route>
       </Switch>
     </Router>

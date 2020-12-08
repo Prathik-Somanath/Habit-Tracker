@@ -24,11 +24,6 @@ const styles = StyleSheet.create({
 
 const contentStyle = {
     height: '25vh',
-    color: '#fff',
-    lineHeight: '25vh',
-    textAlign: 'center',
-    background: '#364d79',
-    marginTop: '30vh',
   };
 
 const headerStyle = {
@@ -39,24 +34,18 @@ const headerStyle = {
 
 function HabitCarousel() {
     return (
-        <Carousel>
-            <div>
-                <h3 style={contentStyle}>1</h3>
-            </div>
-            <div>
-                <h3 style={contentStyle}>2</h3>
-            </div>
-            <div>
-                <h3 style={contentStyle}>3</h3>
-            </div>
-            <div>
-                <h3 style={contentStyle}>4</h3>
-            </div>
+        <Carousel autoplay style={{marginTop: '20vh' }}>
+            <img alt="stepping up" src="SVG/stepup.svg" style={contentStyle} />
+            <img alt="goals" src="SVG/goals.svg" style={contentStyle} />
+            <img alt="target" src="SVG/target.svg" style={contentStyle} />
         </Carousel>
     )
 }
 
 export default function Register() {
+
+    //Used to Switch between Register and Login Forms
+    const [page, setPage] = React.useState(false);
 
     const onFinish = values => {
         console.log('Success:', values);
@@ -74,14 +63,14 @@ export default function Register() {
             </Header>
             <Content style={{ padding: '0 50px' }}>
                 <Row>
-                    <Col span={3} />
+                    <Col span={4} />
                     <Col span={7} >
                         < HabitCarousel />      
                     </Col>
-                    <Col span={14} >
+                    <Col span={13} >
                         <Card className={css(styles.card)}>
                         <Meta
-                            title="Log In"
+                            title={page ? "Register":"Log In"}
                             className={css(styles.header)}
                         />
                             <Form
@@ -92,6 +81,18 @@ export default function Register() {
                                 onFinishFailed={onFinishFailed}
                                 requiredMark={false}
                             >
+                                {
+                                  page && (
+                                    <Form.Item
+                                        label="Username"
+                                        name="username"
+                                        rules={[{ required: true, message: 'Please input your username!' }]}
+                                        // required tooltip="This is a required field"
+                                    >
+                                        <Input size="large" placeholder="Enter Your User Name" />
+                                    </Form.Item>
+                                  )
+                                }
                                 <Form.Item
                                     label="Email"
                                     name="email"
@@ -113,13 +114,21 @@ export default function Register() {
                                 <br/>
                                 <Form.Item >
                                     <Button type="primary" htmlType="submit">
-                                    Log In
+                                        { page ? ('Create an Account'):('Log In') }
                                     </Button>
                                 </Form.Item>
-                                <p>
-                                    Don't have an Account? <a href="/register" >Register</a>
-                                </p>
-                            </Form>
+                                {
+                                    page ? (
+                                        <p>
+                                            Already have an Account? <span style={{color:'blue',cursor:'pointer'}} onClick={()=>setPage(false)}>Log in</span>
+                                        </p>
+                                    ):(
+                                        <p>
+                                            Don't have an Account? <span style={{color:'blue',cursor:'pointer'}} onClick={()=>setPage(true)} >Register</span>
+                                        </p>
+                                    )
+                                }
+                            </Form>    
                         </Card>
                     </Col>
                 </Row>
