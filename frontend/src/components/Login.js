@@ -1,11 +1,13 @@
 import React from 'react';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import { Card, Input, Layout, Form, Button, Carousel, Row, Col } from 'antd';
-import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { EyeInvisibleOutlined, EyeTwoTone, CheckCircleTwoTone } from '@ant-design/icons';
 import { StyleSheet, css } from 'aphrodite';
 
 const { Header, Content } = Layout;
 const { Meta } = Card;
 
+// styles for the login page.
 const styles = StyleSheet.create({
     wrapper: {
         height: '100vh'
@@ -32,6 +34,13 @@ const headerStyle = {
     color: '#fff',
 };  
 
+//dictionary of graphql queries
+const queries = {
+    //query to check if user already exists
+    verifyDuplicate: gql``,
+};
+
+//functional component for the image carousel on the login page.
 function HabitCarousel() {
     return (
         <Carousel autoplay style={{marginTop: '20vh' }}>
@@ -42,13 +51,29 @@ function HabitCarousel() {
     )
 }
 
-export default function Register() {
+export default function Login() {
 
-    //Used to Switch between Register and Login Forms
+    //Used to Switch between Register and Login Forms.
     const [page, setPage] = React.useState(false);
+
+    //function for registering new user
+    const onRegister = (values) => {
+
+    };
+
+    //funtion for logging in a user
+    const onLogin = (values) =>{
+
+    };
 
     const onFinish = values => {
         console.log('Success:', values);
+        if(page){
+            onRegister(values);
+        }
+        else{
+            onLogin(values);
+        }
     };
     
     const onFinishFailed = errorInfo => {

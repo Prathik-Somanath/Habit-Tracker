@@ -15,16 +15,15 @@ CREATE TYPE "habit_interval" AS ENUM (
 );
 
 CREATE TABLE "users" (
-  "id" uuid UNIQUE PRIMARY KEY DEFAULT (gen_random_uuid()),
+  "email" varchar PRIMARY KEY NOT NULL,
   "full_name" varchar(25) NOT NULL,
-  "email" varchar UNIQUE NOT NULL,
   "password" varchar NOT NULL,
   "createdAt" timestamp DEFAULT (now())
 );
 
 CREATE TABLE "habits" (
-  "id" uuid UNIQUE PRIMARY KEY DEFAULT (gen_random_uuid()),
-  "user" uuid,
+  "id" uuid PRIMARY KEY DEFAULT (gen_random_uuid()),
+  "user" varchar,
   "name" varchar(50) NOT NULL,
   "unit" habit_unit NOT NULL,
   "remainder_note" varchar,
@@ -37,15 +36,15 @@ CREATE TABLE "habits" (
 );
 
 CREATE TABLE "history" (
-  "id" uuid UNIQUE PRIMARY KEY DEFAULT (gen_random_uuid()),
+  "id" uuid PRIMARY KEY DEFAULT (gen_random_uuid()),
   "habit" uuid,
-  "user" uuid,
+  "user" varchar,
   "date" date NOT NULL,
   "val" int NOT NULL
 );
 
-ALTER TABLE "habits" ADD FOREIGN KEY ("user") REFERENCES "users" ("id") ON DELETE CASCADE;
+ALTER TABLE "habits" ADD FOREIGN KEY ("user") REFERENCES "users" ("email") ON DELETE CASCADE;
 
 ALTER TABLE "history" ADD FOREIGN KEY ("habit") REFERENCES "habits" ("id");
 
-ALTER TABLE "history" ADD FOREIGN KEY ("user") REFERENCES "users" ("id") ON DELETE CASCADE;
+ALTER TABLE "history" ADD FOREIGN KEY ("user") REFERENCES "users" ("email") ON DELETE CASCADE;
