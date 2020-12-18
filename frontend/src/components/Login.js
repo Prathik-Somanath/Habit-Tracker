@@ -1,8 +1,10 @@
 import React from 'react';
 import { gql, useMutation, useLazyQuery } from '@apollo/client';
 import { Card, Input, Layout, Form, Button, Carousel, Row, Col, notification } from 'antd';
+import { useHistory } from 'react-router-dom';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { StyleSheet, css } from 'aphrodite';
+import { store } from '../store';
 
 const { Header, Content } = Layout;
 const { Meta } = Card;
@@ -47,6 +49,12 @@ const HabitCarousel = () => {
 
 export default function Login() {
 
+    //using global store with context
+    const { dispatch } = React.useContext(store); 
+
+    //react dom page history to update to home page
+    const history = useHistory();
+
     //Used to Switch between Register and Login Forms.
     const [page, setPage] = React.useState(false);
 
@@ -90,6 +98,29 @@ export default function Login() {
         }`
     );
 
+    //Lazy query for user auth
+    const [getUser, getUserResult] = useLazyQuery(
+        gql`query getUser($email: String!, $pass: String!){
+            users(where: {email: {_eq: $email}, _and: {password: {_eq: $pass}}}) {
+              full_name
+              createdAt
+              email
+              habits {
+                bad_habit
+                end_date
+                habit_cycle
+                name
+                id
+                remainder_note
+                reminder_times
+                start_date
+                streak
+                unit
+              }
+            }
+          }`
+    );
+
     //Mutation for creating a user
     const [createUser, userResult] = useMutation(
         gql`mutation user($email: String!,$name: String!,$pass: String!){
@@ -113,8 +144,7 @@ export default function Login() {
        if(checkResult.error){
           handleError(checkResult.error);
        }
-       else{
-         console.log(checkResult.data);  
+       else{  
          if(checkResult.data.users.length !== 0){
             openNotification(
                 'error',
@@ -147,8 +177,32 @@ export default function Login() {
     };
 
     //funtion for logging in a user
-    const onLogin = (values) =>{
-
+    const onLogin = ({email, password}) =>{
+        getUser({
+            variables:{
+                email,
+                pass: password,
+            }
+        });
+        while(getUserResult.loading){}
+        if(getUserResult.error){
+            handleError(getUserResult.error);
+        }
+        else{
+            const {data} = getUserResult;
+            if(data.users.length !== 0){
+                sessionStorage.setItem('HabitTrackerUser',email);
+                dispatch(data.users[0]);
+                //history.replace('/');
+            }
+            else{
+                openNotification(
+                    'error',
+                    'Invalid Credentials',
+                    'Incorrect email or password provided. Please try again with correct credentials.'
+                );
+            }
+        }
     };
 
     //function to handle login/registration form submission

@@ -5,6 +5,7 @@ import { BrowserRouter as Router,
          Route
 } from 'react-router-dom';
 import 'antd/dist/antd.css';
+import { StateProvider } from './store';
 
 //Apollo client object. Used to make requests to the graphql API.
 const client = new ApolloClient({
@@ -17,15 +18,17 @@ const client = new ApolloClient({
 
 function App() {
   return (
-   <ApolloProvider client={client}>
-        <Router>
-            <Switch>
-                <Route exact path="/">
-                    <Login />
-                </Route>
-            </Switch>
-        </Router>
-   </ApolloProvider>
+   <StateProvider>
+      <ApolloProvider client={client}>
+         <Router>
+             <Switch>
+                 <Route exact path="/login">
+                     <Login />
+                 </Route>
+             </Switch>
+         </Router>
+      </ApolloProvider>
+   </StateProvider>
   );
 }
 
