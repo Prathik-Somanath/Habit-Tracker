@@ -9,7 +9,10 @@ import 'antd/dist/antd.css';
 //Apollo client object. Used to make requests to the graphql API.
 const client = new ApolloClient({
   uri: 'https://habit-tracker.hasura.app/v1/graphql',
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  headers:{
+    'x-hasura-access': process.env.REACT_APP_API_PASS,
+  },
 });
 
 function App() {
