@@ -193,7 +193,7 @@ export default function Login() {
             if(data.users.length !== 0){
                 sessionStorage.setItem('HabitTrackerUser',email);
                 dispatch(data.users[0]);
-                history.replace('/');
+                history.replace('/habits');
             }
             else{
                 openNotification(

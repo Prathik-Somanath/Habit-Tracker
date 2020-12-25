@@ -108,7 +108,7 @@ function App() {
                  <Route exact path="/login">
                      <Login />
                  </Route>
-                 <PrivateRoute exact path="/">
+                 <PrivateRoute exact path="/habits">
                      <Home />
                  </PrivateRoute>
              </Switch>
