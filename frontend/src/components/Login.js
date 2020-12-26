@@ -1,6 +1,6 @@
 import React from 'react';
 import { gql, useMutation, useLazyQuery } from '@apollo/client';
-import { Card, Input, Layout, Form, Button, Carousel, Row, Col, notification, resetFields } from 'antd';
+import { Card, Input, Layout, Form, Button, Carousel, Row, Col, notification } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { StyleSheet, css } from 'aphrodite';
