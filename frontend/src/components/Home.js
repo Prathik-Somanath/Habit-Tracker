@@ -13,6 +13,7 @@ import { useQuery, gql } from '@apollo/client';
 import { BrowserRouter as Router,
     Link,
     Route,
+    Switch,
 } from 'react-router-dom';
 import TrackHabit from './TrackHabit';
 import AllHabits from './AllHabits';
@@ -103,9 +104,11 @@ export default function Home () {
             </Sider>
             <Layout className="site-layout" style={{ marginLeft: 200 }}>
             <Content style={{ margin: '24px 16px 0', overflow: 'initial', flex:1, height: '100vh' }}>
-                <Route exact path="/habits" component={TrackHabit} />
-                <Route exact path="/all" component={AllHabits} />
-                <Route exact path="/progress" component={Progress} />
+                <Switch>
+                    <Route exact path="/" component={TrackHabit} />
+                    <Route exact path="/all" component={AllHabits} />
+                    <Route exact path="/progress" component={Progress} />
+                </Switch>
             </Content>
             </Layout>
         </Layout>

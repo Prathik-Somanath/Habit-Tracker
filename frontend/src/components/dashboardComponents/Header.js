@@ -18,10 +18,8 @@ export default function Header() {
 
     const [curTime, setCurTime] = React.useState('')
     React.useEffect(() => {
-        setInterval(() => {
-            const time = format(new Date(), "iiii, dd MMM YYY, HH:mm a");
-            setCurTime(time);
-        }, 1000)
+        const time = format(new Date(), "iiii, dd MMM YYY, HH:mm a");
+        setCurTime(time);
     }, []);
 
     return (
