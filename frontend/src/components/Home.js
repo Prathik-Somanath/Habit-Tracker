@@ -48,11 +48,9 @@ const getUser = gql `
 export default function Home () {
 
     const sessionStore = sessionStorage.getItem('HabitTrackerUser');
-    console.log(sessionStore)
     
     const { loading, error, data } = useQuery( getUser, { variables: {email:sessionStore} } );
 
-    console.log('data : ', data)
 
     if (loading) {
         return (
@@ -74,7 +72,7 @@ export default function Home () {
     {   const user = data.users[0];
         return (
         <Router>
-        <Layout>
+        <Layout style={{height:"100vh"}}>
             <Sider
             style={{
                 overflow: 'auto',

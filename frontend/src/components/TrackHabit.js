@@ -1,11 +1,15 @@
 import React from 'react';
 import { 
-    Spin
+    Spin,
+    Modal,
+    Button
  } from 'antd';
 import { store } from '../store';
 import HomeHeader from './dashboardComponents/Header';
 import HabitCard from './dashboardComponents/HabitCard';
+import NewHabit from './dashboardComponents/NewHabit';
 import { useQuery, gql } from '@apollo/client';
+import { PlusCircleOutlined } from '@ant-design/icons';
 
 const loadingStyle = {
     textAlign: 'center',
@@ -33,6 +37,11 @@ const getUser = gql `
         start_date
         streak
         unit
+        history{
+            id
+            date
+            val
+          }
       }
     }
   }
@@ -40,16 +49,18 @@ const getUser = gql `
 
 export default function TrackHabit () {
 
-    //using global store with context
-    const { state } = React.useContext(store); 
-    console.log('STATE:',state.full_name);
-
+    const [visible, setVisible] = React.useState(false);
     const sessionStore = sessionStorage.getItem('HabitTrackerUser');
-    console.log(sessionStore)
-    
     const { loading, error, data } = useQuery( getUser, { variables: {email:sessionStore} } );
 
-    console.log('data : ', data)
+    // console.log('data : ', data)
+    const showModal = () => {
+        setVisible(true);
+    };
+
+    const handleCancel = () => {
+        setVisible(false);
+    };
 
     if (loading) {
         return (
@@ -72,13 +83,30 @@ export default function TrackHabit () {
         return (
         <>
             <HomeHeader />
-            <div className="site-layout-background" style={{ padding: 24, textAlign: 'center', height:'100vh' }}>
+            <div className="site-layout-background" style={{ padding: 34, textAlign: 'center', display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
                 {
-                    user.habits.map((data) => {
-                        return <HabitCard habitData={data}/>
+                    user.habits.map((data, index) => {
+
+                        return <HabitCard habitData={data} key={index}/>
                     })
                 }
             </div>
+            <PlusCircleOutlined 
+                style={{ fontSize: '50px', color: '#08c', position:'absolute', bottom:'50px', right:'50px' }}
+                onClick={showModal}
+            />
+            <Modal
+                title="Add new Habit"
+                visible={visible}
+                onCancel={handleCancel}
+                footer={[
+                    <Button form="new_habit" key="submit" htmlType="submit">
+                        Submit
+                    </Button>
+                ]}
+            >
+                <NewHabit setVisible={setVisible}/>
+            </Modal>
         </>
         )
     }

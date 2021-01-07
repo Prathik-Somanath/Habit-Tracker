@@ -40,14 +40,11 @@ export default function AllHabits () {
 
     //using global store with context
     const { state } = React.useContext(store); 
-    console.log('STATE:',state.full_name);
 
     const sessionStore = sessionStorage.getItem('HabitTrackerUser');
-    console.log(sessionStore)
     
     const { loading, error, data } = useQuery( getUser, { variables: {email:sessionStore} } );
 
-    console.log('data : ', data)
 
     if (loading) {
         return (
