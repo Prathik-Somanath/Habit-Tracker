@@ -12,17 +12,17 @@ const progress = {
 }
 
 const circle = (day) => {
-  console.log(':::::::',  day)
+  // console.log(':::::::',  day)
   return day
 }
 
 export default function HabitCard({habitData}) {
   habitData.history.forEach((data)=>{
     var date = data.date.split('-');
-    console.log('history:::::::::::::',format(new Date(date), "iii"))
+    // console.log('history:::::::::::::',format(new Date(date), "iii"))
   })
   const [dayStatus, setStatus] = React.useState(false);
-  console.log('habitData: ',habitData)
+  // console.log('habitData: ',habitData)
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     return (
       <div className="site-card-border-less-wrapper" style={{paddingRight:30, paddingBottom: 30}}>

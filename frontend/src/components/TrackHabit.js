@@ -4,12 +4,12 @@ import {
     Modal,
     Button
  } from 'antd';
-import { store } from '../store';
 import HomeHeader from './dashboardComponents/Header';
 import HabitCard from './dashboardComponents/HabitCard';
 import NewHabit from './dashboardComponents/NewHabit';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { PlusCircleOutlined } from '@ant-design/icons';
+import { GET_USER_DETAILS } from '../query';
 
 const loadingStyle = {
     textAlign: 'center',
@@ -20,38 +20,11 @@ const loadingStyle = {
     marginTop: '50vh'
 }
 
-const getUser = gql `
-    query getUser($email: String!){
-    users(where: {email: {_eq: $email}}) {
-      full_name
-      createdAt
-      email
-      habits {
-        bad_habit
-        end_date
-        habit_cycle
-        name
-        id
-        remainder_note
-        reminder_times
-        start_date
-        streak
-        unit
-        history{
-            id
-            date
-            val
-          }
-      }
-    }
-  }
-`
-
 export default function TrackHabit () {
 
     const [visible, setVisible] = React.useState(false);
     const sessionStore = sessionStorage.getItem('HabitTrackerUser');
-    const { loading, error, data } = useQuery( getUser, { variables: {email:sessionStore} } );
+    const { loading, error, data } = useQuery( GET_USER_DETAILS, { variables: {email:sessionStore} } );
 
     // console.log('data : ', data)
     const showModal = () => {
@@ -105,7 +78,7 @@ export default function TrackHabit () {
                     </Button>
                 ]}
             >
-                <NewHabit setVisible={setVisible}/>
+                <NewHabit setVisible={setVisible} userID={sessionStore}/>
             </Modal>
         </>
         )

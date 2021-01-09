@@ -10,6 +10,8 @@ import {
     TimePicker,
     Button
     } from 'antd';
+import { gql, useMutation } from '@apollo/client'
+import { GET_USER_DETAILS } from '../../query';
 const { RangePicker } = DatePicker;
 
 const headerContainer = {
@@ -18,12 +20,42 @@ const headerContainer = {
     justifyContent:'space-between'
 }
 
-export default function NewHabit({setVisible}) {
+const ADD_NEW_HABIT = gql`
+    mutation AddNewHabit($user_id: String!, $habit_name: String!, $type: habit_unit!, $note: String, $bad_habit: Boolean, $start_date: date, $end_date: date, $reps: Int) {
+        insert_habits_one(object: {
+        name: $habit_name, 
+        user: $user_id, 
+        start_date: $start_date, 
+        remainder_note: $note, 
+        unit: $type, 
+        end_date: $end_date, 
+        reps: $reps,
+        bad_habit: $bad_habit
+        }) {
+        id
+        }
+    }  
+`;
+
+export default function NewHabit({ setVisible, userID }) {
 
     const [form] = Form.useForm();
     const [habitType, setHabitType] = useState(null);
+    const [addNewHabit, {data, error}] = useMutation(ADD_NEW_HABIT);
+
     const onFinish = (values) => {
-        console.log('values:::::::::::::::::::', values)
+        console.log('values:::::::::::::::::::', format(new Date(values.date_range[0]._d), "yyyy-MM-dd"))
+        addNewHabit({
+            variables: {
+                user_id: userID,
+                habit_name: values.habit_name,
+                type: values.type,
+                start_date: format(new Date(values.date_range[0]._d), "yyyy-MM-dd"),
+                end_date: format(new Date(values.date_range[1]._d), "yyyy-MM-dd"),
+                reps: values.reps_no ? values.reps_no : null
+            },
+            refetchQueries: [{ query: GET_USER_DETAILS, variables: { email: userID } }],
+        })
         form.resetFields();
         setVisible(false);
     }
@@ -38,7 +70,7 @@ export default function NewHabit({setVisible}) {
             layout="horizontal"
             form={form}
             onFinish={onFinish}
-            onFinishFailed={console.log('falied')}
+            onFinishFailed={onFormFail}
             id='new_habit'
         >
             <Form.Item
