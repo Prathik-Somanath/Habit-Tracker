@@ -13,6 +13,7 @@ import { useQuery, gql } from '@apollo/client';
 import { BrowserRouter as Router,
     Link,
     Route,
+    Switch,
 } from 'react-router-dom';
 import TrackHabit from './TrackHabit';
 import AllHabits from './AllHabits';
@@ -47,11 +48,9 @@ const getUser = gql `
 export default function Home () {
 
     const sessionStore = sessionStorage.getItem('HabitTrackerUser');
-    console.log(sessionStore)
     
     const { loading, error, data } = useQuery( getUser, { variables: {email:sessionStore} } );
 
-    console.log('data : ', data)
 
     if (loading) {
         return (
@@ -73,7 +72,7 @@ export default function Home () {
     {   const user = data.users[0];
         return (
         <Router>
-        <Layout>
+        <Layout style={{height:"100vh"}}>
             <Sider
             style={{
                 overflow: 'auto',
@@ -89,7 +88,7 @@ export default function Home () {
                 </Header>
                 <Menu.Item key="1" icon={<UserOutlined />}>
                     {user.full_name}
-                    <Link to="/habits" />
+                    <Link to="/" />
                 </Menu.Item>
                 <Menu.Item key="2" icon={<FormOutlined />}>
                     All Habits
@@ -103,9 +102,11 @@ export default function Home () {
             </Sider>
             <Layout className="site-layout" style={{ marginLeft: 200 }}>
             <Content style={{ margin: '24px 16px 0', overflow: 'initial', flex:1, height: '100vh' }}>
-                <Route exact path="/habits" component={TrackHabit} />
-                <Route exact path="/all" component={AllHabits} />
-                <Route exact path="/progress" component={Progress} />
+                <Switch>
+                    <Route exact path="/" component={TrackHabit} />
+                    <Route exact path="/all" component={AllHabits} />
+                    <Route exact path="/progress" component={Progress} />
+                </Switch>
             </Content>
             </Layout>
         </Layout>

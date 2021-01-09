@@ -16,7 +16,7 @@ const calendar = {
 
 export default function Header() {
 
-    const [curTime, setCurTime] = React.useState('')
+    const [curTime, setCurTime] = React.useState(format(new Date(), "iiii, dd MMM YYY, HH:mm a"));
     React.useEffect(() => {
         setInterval(() => {
             const time = format(new Date(), "iiii, dd MMM YYY, HH:mm a");

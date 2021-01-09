@@ -58,6 +58,11 @@ export default function Login() {
     //Used to Switch between Register and Login Forms.
     const [page, setPage] = React.useState(false);
 
+    const [form] = Form.useForm();
+
+    //variable used to refresh page after a data request.
+    const [registerValue, setRegister] = React.useState(null);
+
     //function to open a custom notification with icon
     const openNotification = (type, title, desc) => {
         notification[type]({
@@ -89,13 +94,76 @@ export default function Login() {
         }
     };
 
+    //Mutation for creating a user
+    const [createUser, userResult] = useMutation(
+        gql`mutation user($email: String!,$name: String!,$pass: String!){
+                insert_users(objects: {email: $email, full_name: $name, password: $pass}) {
+                    affected_rows
+                    returning {
+                        createdAt
+                    }
+                }
+            }`,{
+                //function to continue registration process after mutation
+                onCompleted(){
+                    if(userResult.error){
+                        handleError(userResult.error);
+                    }
+                    else{
+                        openNotification(
+                            'success',
+                            'Account successfully created',
+                            "Your Habit Tracker account has been created. You can now login.", 
+                        );
+                        setPage(()=>{
+                            form.resetFields();
+                            return false;
+                        });
+                    }
+            },
+        }  
+    );
+
     //Lazy query for checking if user already exists
     const [checkUser,checkResult] = useLazyQuery(
         gql`query verify($email: String!){
                 users(where:{email: {_eq: $email}}){
                     email
             }
-        }`
+        }`,{
+            //funtion to continue registration process after user check query
+            onCompleted(data){
+                if(checkResult.error){
+                    handleError(checkResult.error);
+                 }
+                 else{  
+                   if(data.users.length !== 0){
+                      openNotification(
+                          'error',
+                          'Account already exists',
+                          "An account with this email already exists. Please use a different email or login with this email.", 
+                      );
+                   }
+                   else if( registerValue === null){
+                        openNotification(
+                            'error',
+                            'Internal Error',
+                            "There was an error in the registration process. Please try again.", 
+                        );
+                   }
+                   else{
+                      //activating mutation to create new user 
+                      createUser({
+                          variables:{
+                              email: registerValue.email,
+                              name: registerValue.name,
+                              pass: registerValue.password
+                          }
+                      });
+                    }
+                 }       
+            }
+        }
     );
 
     //Lazy query for user auth
@@ -118,101 +186,51 @@ export default function Login() {
                 unit
               }
             }
-          }`
-    );
-
-    //Mutation for creating a user
-    const [createUser, userResult] = useMutation(
-        gql`mutation user($email: String!,$name: String!,$pass: String!){
-                insert_users(objects: {email: $email, full_name: $name, password: $pass}) {
-                    affected_rows
-                    returning {
-                        createdAt
+          }`,{
+            //funtion to continue login process after receiving data  
+            onCompleted(data){
+                if(getUserResult.error){
+                    handleError(getUserResult.error);
+                }
+                else{
+                    if(data.users.length !== 0){
+                        const user = data.users[0]
+                        sessionStorage.setItem('HabitTrackerUser',user.email);
+                        dispatch(data.users[0]);
+                        history.replace('/');
+                    }
+                    else{
+                        openNotification(
+                            'error',
+                            'Invalid Credentials',
+                            'Incorrect email or password provided. Please try again with correct credentials.'
+                        );
                     }
                 }
-            }`
+            },
+          }
     );
-
-    //function for registering new user
-    const onRegister = ({ email, name, password }) => {
-       checkUser({
-           variables:{
-               email,
-           },
-       });
-       while(checkResult.loading){}
-       if(checkResult.error){
-          handleError(checkResult.error);
-       }
-       else{  
-         if(checkResult.data.users.length !== 0){
-            openNotification(
-                'error',
-                'Account already exists',
-                "An account with this email already exists. Please use a different email or login with this email.", 
-            );
-         }
-         else{
-            createUser({
-                variables:{
-                    email,
-                    name,
-                    pass: password
-                }
-            });
-            while(userResult.loading){}
-            if(userResult.error){
-                handleError(userResult.error);
-            }
-            else{
-                openNotification(
-                    'success',
-                    'Account successfully created',
-                    "Your Habit Tracker account has been created. You can now login.", 
-                );
-                setPage(false);
-            }
-         }
-       }
-    };
-
-    //funtion for logging in a user
-    const onLogin = ({email, password}) =>{
-        getUser({
-            variables:{
-                email,
-                pass: password,
-            }
-        });
-        while(getUserResult.loading){}
-        if(getUserResult.error){
-            handleError(getUserResult.error);
-        }
-        else{
-            const {data} = getUserResult;
-            if(data.users.length !== 0){
-                sessionStorage.setItem('HabitTrackerUser',email);
-                dispatch(data.users[0]);
-                history.replace('/habits');
-            }
-            else{
-                openNotification(
-                    'error',
-                    'Invalid Credentials',
-                    'Incorrect email or password provided. Please try again with correct credentials.'
-                );
-            }
-        }
-    };
 
     //function to handle login/registration form submission
     const onFinish = values => {
         console.log('Success:', values);
         if(page){
-            onRegister(values);
+            setRegister(values);
+            //query to check if given user already exists
+            checkUser({
+                variables:{
+                    email: values.email,
+                },
+            });
         }
         else{
-            onLogin(values);
+            //querying user based on user input
+            getUser({
+                variables:{
+                    email: values.email,
+                    pass: values.password,
+                },
+            });
         }
     };
     
@@ -240,9 +258,9 @@ export default function Login() {
                             className={css(styles.header)}
                         />
                             <Form
+                                form={form}
                                 layout="vertical"
                                 name="basic"
-                                initialValues={{ remember: true }}
                                 onFinish={onFinish}
                                 onFinishFailed={onFinishFailed}
                                 requiredMark={false}
@@ -252,6 +270,7 @@ export default function Login() {
                                     <Form.Item
                                         label="Name"
                                         name="name"
+                                        initialValue=""
                                         rules={[{ required: true, message: 'Please input your Name!' }]}
                                         // required tooltip="This is a required field"
                                     >
@@ -262,6 +281,7 @@ export default function Login() {
                                 <Form.Item
                                     label="Email"
                                     name="email"
+                                    initialValue=""
                                     rules={[{ required: true, message: 'Please input your Email!' }]}
                                 >
                                     <Input size="large" placeholder="Enter Your Email" />
@@ -269,6 +289,7 @@ export default function Login() {
                                 <Form.Item
                                     label="Password"
                                     name="password"
+                                    initialValue=""
                                     rules={[{ required: true, message: 'Please input your Password!' }]}
                                 >
                                     <Input.Password
@@ -286,11 +307,30 @@ export default function Login() {
                                 {
                                     page ? (
                                         <p>
-                                            Already have an Account? <span style={{color:'blue',cursor:'pointer'}} onClick={()=>setPage(false)}>Log in</span>
+                                            Already have an Account? <span 
+                                                                        style={{color:'blue',cursor:'pointer'}} 
+                                                                        onClick={()=>
+                                                                            setPage(()=>{
+                                                                                    form.resetFields();
+                                                                                    return false;
+                                                                            }
+                                                                        )}
+                                                                     >
+                                                                         Log in
+                                                                    </span>
                                         </p>
                                     ):(
                                         <p>
-                                            Don't have an Account? <span style={{ color:'blue',cursor:'pointer' }} onClick={()=>setPage(true)} >Register</span>
+                                            Don't have an Account? <span 
+                                                                        style={{ color:'blue',cursor:'pointer' }} 
+                                                                        onClick={()=>
+                                                                            setPage(()=>{
+                                                                                            form.resetFields();
+                                                                                            return true;
+                                                                            }
+                                                                        )}>
+                                                                            Register
+                                                                        </span>
                                         </p>
                                     )
                                 }

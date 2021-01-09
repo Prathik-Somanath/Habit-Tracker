@@ -3,6 +3,7 @@ import {
   Card, 
   Progress 
 } from 'antd';
+import { format } from 'date-fns'
 
 const progress = {
   display: 'flex',
@@ -11,22 +12,26 @@ const progress = {
 }
 
 const circle = (day) => {
-  console.log(':::::::',  day)
+  // console.log(':::::::',  day)
   return day
 }
 
 export default function HabitCard({habitData}) {
+  habitData.history.forEach((data)=>{
+    var date = data.date.split('-');
+    // console.log('history:::::::::::::',format(new Date(date), "iii"))
+  })
   const [dayStatus, setStatus] = React.useState(false);
-  console.log(habitData)
+  // console.log('habitData: ',habitData)
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     return (
-      <div className="site-card-border-less-wrapper">
+      <div className="site-card-border-less-wrapper" style={{paddingRight:30, paddingBottom: 30}}>
         <Card title={habitData.name} bordered={true} style={{ width: 500 }}>
           <div style={progress}>
             {
-              days.map(day => (
-                <div onClick={()=>setStatus(true)} >
-                  <Progress type="circle" percent={100} width={50} format={circle} />
+              days.map((day, index) => (
+                <div key={index} onClick={()=>setStatus(true)} >
+                  <Progress type="circle" percent={100} width={50} format={circle} key={index} />
                   <p>{day}</p>
                 </div>
               ))
