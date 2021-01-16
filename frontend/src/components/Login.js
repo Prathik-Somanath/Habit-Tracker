@@ -4,7 +4,6 @@ import { Card, Input, Layout, Form, Button, Carousel, Row, Col, notification, Ty
 import { useHistory } from 'react-router-dom';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { StyleSheet, css } from 'aphrodite';
-import { store } from '../store';
 
 const { Title } = Typography;
 const { Header, Content } = Layout;
@@ -67,9 +66,6 @@ const HabitCarousel = () => {
 }
 
 export default function Login() {
-
-    //using global store with context
-    const { dispatch } = React.useContext(store); 
 
     //react dom page history to update to home page
     const history = useHistory();
@@ -189,21 +185,7 @@ export default function Login() {
     const [getUser, getUserResult] = useLazyQuery(
         gql`query getUser($email: String!, $pass: String!){
             users(where: {email: {_eq: $email}, _and: {password: {_eq: $pass}}}) {
-              full_name
-              createdAt
               email
-              habits {
-                bad_habit
-                end_date
-                habit_cycle
-                name
-                id
-                remainder_note
-                reminder_times
-                start_date
-                streak
-                unit
-              }
             }
           }`,{
             //funtion to continue login process after receiving data  
@@ -213,9 +195,7 @@ export default function Login() {
                 }
                 else{
                     if(data.users.length !== 0){
-                        const user = data.users[0]
-                        sessionStorage.setItem('HabitTrackerUser',user.email);
-                        dispatch(data.users[0]);
+                        sessionStorage.setItem('HabitTrackerUser',data.users[0].email);
                         history.replace('/');
                     }
                     else{
