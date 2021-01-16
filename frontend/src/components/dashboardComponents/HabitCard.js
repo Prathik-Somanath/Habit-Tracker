@@ -65,7 +65,7 @@ export default function HabitCard({habitData}) {
                     info.val===0 || info.val===100 ? (
                       <Progress type="circle" percent={info.val} width={50} status={info.val === 0 ? 'exception':'normal'} key={index} />
                     ):( info.val === -1 ? (
-                      <Progress strokecolor="#808080" type="circle" percent={100} width={50} format={(x)=>'-'} key={index} />
+                      <Progress trailColor="#808080" type="circle" percent={0} width={50} format={()=>"-"} key={index} />
                     ):(
                       <Progress type="circle" percent={info.val} width={50} format={circle} key={index} />
                     ) 
