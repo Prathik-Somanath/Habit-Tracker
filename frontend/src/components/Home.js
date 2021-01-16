@@ -8,12 +8,14 @@ import {
   BarChartOutlined,
   UserOutlined,
   FormOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons';
 import { useQuery, gql } from '@apollo/client';
 import { BrowserRouter as Router,
     Link,
     Route,
     Switch,
+    useHistory,
 } from 'react-router-dom';
 import TrackHabit from './TrackHabit';
 import AllHabits from './AllHabits';
@@ -48,7 +50,7 @@ const getUser = gql `
 export default function Home () {
 
     const sessionStore = sessionStorage.getItem('HabitTrackerUser');
-    
+    const history = useHistory();
     const { loading, error, data } = useQuery( getUser, { variables: {email:sessionStore} } );
 
 
@@ -97,6 +99,12 @@ export default function Home () {
                 <Menu.Item key="3" icon={<BarChartOutlined />}>
                     Progress
                     <Link to="/progress" />
+                </Menu.Item>
+                <Menu.Item key="4" icon={<LogoutOutlined />} onClick={()=>{
+                    sessionStorage.clear();
+                    history.push('/login');
+                }}>
+                    Logout
                 </Menu.Item>
             </Menu>
             </Sider>
