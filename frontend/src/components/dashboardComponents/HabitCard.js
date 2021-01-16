@@ -3,8 +3,7 @@ import {
   Card, 
   Progress 
 } from 'antd';
-import { ArrowsAltOutlined } from '@ant-design/icons';
-import { format, getDay, sub, isEqual, isBefore } from 'date-fns'
+import { getDay, sub, isBefore, differenceInDays } from 'date-fns'
 
 const progress = {
   display: 'flex',
@@ -26,17 +25,24 @@ export default function HabitCard({habitData, setEditData, showModal}) {
   const days = ['Sun','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const card_data = [];
   let day_pointer = new Date();
+  const day_limit = sub(day_pointer,{days:7});
   habitData.history.forEach(ele => {
-    let info = {
-      day_index: getDay(day_pointer),
-    };
-    if(isEqual(day_pointer,new Date(ele.date))){
-      info.val = valEdit(ele.val,habitData.unit,habitData.reps);
+    let info = {};
+    const record = new Date(ele.date);
+    if(!isBefore(record,day_limit)){
+      info.val = 0;
+      for(let i=0;i<differenceInDays(day_pointer,record);i++){
+        info.day_index = getDay(day_pointer);
+        card_data.push(info);
+        day_pointer = sub(day_pointer,{days:1});
+      }
+      info.day_index = getDay(record);
+      info.val = valEdit(ele.val,habitData.units,habitData.reps);
       card_data.push(info);
       day_pointer = sub(day_pointer,{days:1});
     }
   });
-  for(let i=card_data.length;i<days.length;i++ ){
+  for(let i=card_data.length;i<days.length;i++){
     let info = {
       day_index: getDay(day_pointer),
     };
@@ -54,6 +60,8 @@ export default function HabitCard({habitData, setEditData, showModal}) {
     else
       return `${(val/100)*habitData.reps} min`
   }  
+
+  console.log(card_data);
     
     return (
       <div className="site-card-border-less-wrapper" style={{paddingRight:30, paddingBottom: 30}}>
@@ -70,7 +78,8 @@ export default function HabitCard({habitData, setEditData, showModal}) {
             />
           } 
           bordered={true} 
-          style={{ width: 500 }}>
+          style={{ width: 500 }}
+        >
           <div style={progress}>
             {
               card_data.map((info,index)=>(
