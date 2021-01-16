@@ -8,7 +8,7 @@ import HomeHeader from './dashboardComponents/Header';
 import HabitCard from './dashboardComponents/HabitCard';
 import NewHabit from './dashboardComponents/NewHabit';
 import { useQuery } from '@apollo/client';
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined, DeleteOutlined } from '@ant-design/icons';
 import { GET_USER_DETAILS } from '../query';
 
 const loadingStyle = {
@@ -72,11 +72,21 @@ export default function TrackHabit () {
                 title="Add new Habit"
                 visible={visible}
                 onCancel={handleCancel}
-                footer={[
+                footer={ editHabitDate 
+                    ? [
+                    <Button icon={<DeleteOutlined />}>
+                        Delete
+                    </Button>,
                     <Button form="new_habit" key="submit" htmlType="submit">
-                        Submit
+                        Edit
                     </Button>
-                ]}
+                    ]
+                    : [
+                        <Button form="new_habit" key="submit" htmlType="submit">
+                            Submit
+                        </Button>
+                    ]
+                }
             >
                 <NewHabit setVisible={setVisible} userID={sessionStore} editHabitDate={editHabitDate}/>
             </Modal>

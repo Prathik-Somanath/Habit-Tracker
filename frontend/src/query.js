@@ -28,3 +28,11 @@ export const GET_USER_DETAILS = gql `
     }
     }`
 ;
+
+export const EDIT_HABIT = gql `
+    mutation EditHabit( $id: uuid!,$user_id: String!, $habit_name: String!, $type: habit_unit!, $note: String, $bad_habit: Boolean, $start_date: date, $end_date: date, $reps: Int, $duration: Int) {
+        update_habits_by_pk(pk_columns:{id: $id}, _set:{name: $habit_name, user: $user_id, start_date: $start_date, remainder_note: $note, unit: $type, end_date: $end_date, reps: $reps, bad_habit: $bad_habit, duration: $duration}) {
+        id
+        }
+    }  
+`;

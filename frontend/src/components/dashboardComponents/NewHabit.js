@@ -12,7 +12,7 @@ import {
     Button
     } from 'antd';
 import { gql, useMutation } from '@apollo/client'
-import { GET_USER_DETAILS } from '../../query';
+import { GET_USER_DETAILS, EDIT_HABIT } from '../../query';
 const { RangePicker } = DatePicker;
 
 const headerContainer = {
@@ -47,10 +47,26 @@ export default function NewHabit({ setVisible, userID, editHabitDate }) {
     },[editHabitDate])
     const [habitType, setHabitType] = useState(null);
     const [addNewHabit, {data, error}] = useMutation(ADD_NEW_HABIT);
+    const [editHabit] = useMutation(EDIT_HABIT);
     const onFinish = (values) => {
         console.log('values:::::::::::::::::::', format(new Date(values.date_range[0]._d), "yyyy-MM-dd"))
-        addNewHabit({
+        (editHabitDate)
+        ? addNewHabit({
             variables: {
+                user_id: userID,
+                habit_name: values.habit_name,
+                type: values.type,
+                start_date: format(new Date(values.date_range[0]._d), "yyyy-MM-dd"),
+                end_date: format(new Date(values.date_range[1]._d), "yyyy-MM-dd"),
+                reps: values.reps_no ? values.reps_no : null,
+                note: values.note ? values.note : null,
+                duration: values.duration ? values.duration : null
+            },
+            refetchQueries: [{ query: GET_USER_DETAILS, variables: { email: userID } }],
+        })
+        : editHabitDate({
+            variables: {
+                id: editHabitDate.id,
                 user_id: userID,
                 habit_name: values.habit_name,
                 type: values.type,
