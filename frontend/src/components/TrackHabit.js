@@ -9,7 +9,7 @@ import HabitCard from './dashboardComponents/HabitCard';
 import NewHabit from './dashboardComponents/NewHabit';
 import { useQuery, useMutation } from '@apollo/client';
 import { PlusCircleOutlined, DeleteOutlined } from '@ant-design/icons';
-import { GET_USER_DETAILS, DELECT_HABIT } from '../query';
+import { GET_USER_DETAILS, DELETE_HABIT } from '../query';
 
 const loadingStyle = {
     textAlign: 'center',
@@ -25,7 +25,7 @@ export default function TrackHabit () {
     const [visible, setVisible] = React.useState(false);
     const sessionStore = sessionStorage.getItem('HabitTrackerUser');
     const { loading, error, data } = useQuery( GET_USER_DETAILS, { variables: {email:sessionStore} } );
-    const [deleteHabit] = useMutation(DELECT_HABIT);
+    const [deleteHabit] = useMutation(DELETE_HABIT);
     const [editHabitDate, setEditData] = React.useState(null);
 
     const deleteHabitData = () => {

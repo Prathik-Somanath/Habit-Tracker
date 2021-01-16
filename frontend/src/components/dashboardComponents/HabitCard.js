@@ -86,13 +86,17 @@ export default function HabitCard({habitData, setEditData, showModal}) {
               card_data.map((info,index)=>(
                 <div key={index} >
                   {
-                    info.val===0 || info.val===100 ? (
-                      <Progress type="circle" percent={info.val} width={50} status={info.val === 0 ? 'exception':'success'} key={index} />
-                    ):( info.val === -1 ? (
-                      <Progress trailColor="#808080" type="circle" percent={0} width={50} format={()=>"-"} key={index} />
+                    index === 0 && info.val === 0 ? (
+                      <Progress type="circle" trailColor="#ffb95a" percent={0} width={50}  format={()=>"-"} key={index} />
                     ):(
-                      <Progress type="circle" percent={info.val} width={50} format={circle} key={index} />
-                    ) 
+                      info.val===0 || info.val===100 ? (
+                        <Progress type="circle" percent={info.val} width={50} status={info.val === 0 ? 'exception':'success'} key={index} />
+                      ):( info.val === -1 ? (
+                        <Progress trailColor="#808080" type="circle" percent={0} width={50} format={()=>"-"} key={index} />
+                      ):(
+                        <Progress type="circle" percent={info.val} width={50} format={circle} key={index} />
+                      ) 
+                      )
                     )
                   }
                   <p>{days[info.day_index]}</p>
