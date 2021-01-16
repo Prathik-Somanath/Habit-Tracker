@@ -25,14 +25,14 @@ export default function TrackHabit () {
     const [visible, setVisible] = React.useState(false);
     const sessionStore = sessionStorage.getItem('HabitTrackerUser');
     const { loading, error, data } = useQuery( GET_USER_DETAILS, { variables: {email:sessionStore} } );
-
-    // console.log('data : ', data)
+    const [editHabitDate, setEditData] = React.useState(null);
     const showModal = () => {
         setVisible(true);
     };
 
     const handleCancel = () => {
         setVisible(false);
+        setEditData(null);
     };
 
     if (loading) {
@@ -60,7 +60,7 @@ export default function TrackHabit () {
                 {
                     user.habits.map((data, index) => {
 
-                        return <HabitCard habitData={data} key={index}/>
+                        return <HabitCard habitData={data} key={index} setEditData={setEditData} showModal={showModal}/>
                     })
                 }
             </div>
@@ -78,7 +78,7 @@ export default function TrackHabit () {
                     </Button>
                 ]}
             >
-                <NewHabit setVisible={setVisible} userID={sessionStore}/>
+                <NewHabit setVisible={setVisible} userID={sessionStore} editHabitDate={editHabitDate}/>
             </Modal>
         </>
         )

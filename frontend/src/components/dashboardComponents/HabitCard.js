@@ -3,7 +3,7 @@ import {
   Card, 
   Progress 
 } from 'antd';
-import { format, getDay, sub, isEqual, isBefore, differenceInDays } from 'date-fns'
+import { getDay, sub, isBefore, differenceInDays } from 'date-fns'
 
 const progress = {
   display: 'flex',
@@ -21,6 +21,7 @@ const valEdit = (val,unit,reps) =>{
 };
 
 export default function HabitCard({habitData}) {
+  console.log(habitData);
   const days = ['Sun','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const card_data = [];
   let day_pointer = new Date();
@@ -36,12 +37,12 @@ export default function HabitCard({habitData}) {
         day_pointer = sub(day_pointer,{days:1});
       }
       info.day_index = getDay(record);
-      info.val = valEdit(ele.val,habitData.unit,habitData.reps);
+      info.val = valEdit(ele.val,habitData.units,habitData.reps);
       card_data.push(info);
       day_pointer = sub(day_pointer,{days:1});
     }
   });
-  for(let i=card_data.length;i<days.length;i++ ){
+  for(let i=card_data.length;i<days.length;i++){
     let info = {
       day_index: getDay(day_pointer),
     };
@@ -59,7 +60,9 @@ export default function HabitCard({habitData}) {
     else
       return `${(val/100)*habitData.reps} min`
   }  
-  
+
+  console.log(card_data);
+    
     return (
       <div className="site-card-border-less-wrapper" style={{paddingRight:30, paddingBottom: 30}}>
         <Card title={habitData.name} bordered={true} style={{ width: 500 }}>
@@ -69,7 +72,7 @@ export default function HabitCard({habitData}) {
                 <div key={index} >
                   {
                     info.val===0 || info.val===100 ? (
-                      <Progress type="circle" percent={info.val} width={50} status={info.val === 0 ? 'exception':'success'} key={index} />
+                      <Progress type="circle" percent={info.val} width={50} status={info.val === 0 ? 'exception':'normal'} key={index} />
                     ):( info.val === -1 ? (
                       <Progress trailColor="#808080" type="circle" percent={0} width={50} format={()=>"-"} key={index} />
                     ):(
