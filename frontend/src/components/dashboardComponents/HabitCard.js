@@ -4,6 +4,7 @@ import {
   Progress 
 } from 'antd';
 import { getDay, sub, isBefore, differenceInDays } from 'date-fns'
+import { ArrowsAltOutlined } from '@ant-design/icons';
 
 const progress = {
   display: 'flex',

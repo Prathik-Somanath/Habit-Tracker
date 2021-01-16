@@ -50,21 +50,8 @@ export default function NewHabit({ setVisible, userID, editHabitDate }) {
     const [editHabit] = useMutation(EDIT_HABIT);
     const onFinish = (values) => {
         console.log('values:::::::::::::::::::', format(new Date(values.date_range[0]._d), "yyyy-MM-dd"))
-        (editHabitDate)
-        ? addNewHabit({
-            variables: {
-                user_id: userID,
-                habit_name: values.habit_name,
-                type: values.type,
-                start_date: format(new Date(values.date_range[0]._d), "yyyy-MM-dd"),
-                end_date: format(new Date(values.date_range[1]._d), "yyyy-MM-dd"),
-                reps: values.reps_no ? values.reps_no : null,
-                note: values.note ? values.note : null,
-                duration: values.duration ? values.duration : null
-            },
-            refetchQueries: [{ query: GET_USER_DETAILS, variables: { email: userID } }],
-        })
-        : editHabitDate({
+        {(editHabitDate)
+        ? editHabit({
             variables: {
                 id: editHabitDate.id,
                 user_id: userID,
@@ -78,6 +65,19 @@ export default function NewHabit({ setVisible, userID, editHabitDate }) {
             },
             refetchQueries: [{ query: GET_USER_DETAILS, variables: { email: userID } }],
         })
+        : addNewHabit({
+            variables: {
+                user_id: userID,
+                habit_name: values.habit_name,
+                type: values.type,
+                start_date: format(new Date(values.date_range[0]._d), "yyyy-MM-dd"),
+                end_date: format(new Date(values.date_range[1]._d), "yyyy-MM-dd"),
+                reps: values.reps_no ? values.reps_no : null,
+                note: values.note ? values.note : null,
+                duration: values.duration ? values.duration : null
+            },
+            refetchQueries: [{ query: GET_USER_DETAILS, variables: { email: userID } }],
+        })}
         form.resetFields();
         setVisible(false);
     }
@@ -99,15 +99,17 @@ export default function NewHabit({ setVisible, userID, editHabitDate }) {
                 name='habit_name'
                 label="Habit"
                 rules={[{ required: true, message: "Please input Habit's Name!" }]}
+                initialValue={!!editHabitDate ? editHabitDate.name : ""}
             >
-                <Input placeholder="Enter Name of the Habit" defaultValue={!!editHabitDate ? editHabitDate.name : ""} />
+                <Input placeholder="Enter Name of the Habit" />
             </Form.Item>
             <Form.Item
                 name='type'
                 label="Type"
                 rules={[{ required: true, message: "Please Select Type of Habit!" }]}
+                initialValue={editHabitDate ? editHabitDate.unit : ""}
             >
-                <Select onChange={(type)=>setHabitType(type)} placeholder="Enter Type of Habit" defaultValue={editHabitDate ? editHabitDate.unit : ""}>
+                <Select onChange={(type)=>setHabitType(type)} placeholder="Enter Type of Habit">
                     <Select.Option value="CHECK">Yes/No</Select.Option>
                     <Select.Option value="REPS">Integer Habit(Reps)</Select.Option>
                     <Select.Option value="DURATION">Timed Habit</Select.Option>
@@ -118,16 +120,18 @@ export default function NewHabit({ setVisible, userID, editHabitDate }) {
                 name='date_range'
                 label="Date"
                 rules={[{ required: true, message: "Please Select date!" }]}
+                initialValue={editHabitDate ? [moment(editHabitDate.start_date), moment(editHabitDate.end_date)] : ""}
             >
-                <RangePicker defaultValue={editHabitDate ? [moment(editHabitDate.start_date), moment(editHabitDate.end_date)] : ""} />
+                <RangePicker />
             </Form.Item>
             { (habitType === 'REPS' || editHabitDate && editHabitDate.unit === 'REPS') &&
                 <Form.Item 
                     name="reps_no" 
                     label="Count"
                     rules={[{ required: true, message: "Please Select Reps no.!" }]}
+                    initialValue={editHabitDate ? editHabitDate.reps : ""}
                 >
-                    <InputNumber defaultValue={editHabitDate ? editHabitDate.reps : ""} />
+                    <InputNumber/>
                 </Form.Item>
             }
             { (habitType === 'DURATION' || editHabitDate && (editHabitDate.unit === 'DURATION')) &&
@@ -135,14 +139,16 @@ export default function NewHabit({ setVisible, userID, editHabitDate }) {
                     name="duration" 
                     label="Duration(mins)"
                     rules={[{ required: true, message: "Please Select Duration!" }]}
+                    initialValue={editHabitDate ? editHabitDate.duration : ""}
                 >
-                    <InputNumber defaultValue={editHabitDate ? editHabitDate.duration : ""} />
+                    <InputNumber />
                 </Form.Item>
             }
             <Form.Item
                 name='note'
                 label="Note"
                 // rules={[{ required: true, message: "Please input Habit's Name!" }]}
+                initialValue={editHabitDate ? editHabitDate.remainder_note : ""}
             >
                 <Input placeholder="Enter Note for the Habit" defaultValue={editHabitDate ? editHabitDate.remainder_note : ""} />
             </Form.Item>
