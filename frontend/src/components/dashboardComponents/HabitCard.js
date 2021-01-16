@@ -3,7 +3,7 @@ import {
   Card, 
   Progress 
 } from 'antd';
-import { getDay, sub, isBefore, differenceInDays } from 'date-fns'
+import { getDay, sub, isBefore, differenceInCalendarDays } from 'date-fns';
 import { ArrowsAltOutlined } from '@ant-design/icons';
 
 const progress = {
@@ -31,10 +31,10 @@ export default function HabitCard({habitData, setEditData, showModal}) {
     let info = {};
     const record = new Date(ele.date);
     if(!isBefore(record,day_limit)){
-      info.val = 0;
-      for(let i=0;i<differenceInDays(day_pointer,record);i++){
-        info.day_index = getDay(day_pointer);
-        card_data.push(info);
+      for(let i=0;i<differenceInCalendarDays(day_pointer,record);i++){
+        let dead_day = { val: 0 };
+        dead_day.day_index = getDay(day_pointer);
+        card_data.push(dead_day);
         day_pointer = sub(day_pointer,{days:1});
       }
       info.day_index = getDay(record);
@@ -87,7 +87,7 @@ export default function HabitCard({habitData, setEditData, showModal}) {
                 <div key={index} >
                   {
                     info.val===0 || info.val===100 ? (
-                      <Progress type="circle" percent={info.val} width={50} status={info.val === 0 ? 'exception':'normal'} key={index} />
+                      <Progress type="circle" percent={info.val} width={50} status={info.val === 0 ? 'exception':'success'} key={index} />
                     ):( info.val === -1 ? (
                       <Progress trailColor="#808080" type="circle" percent={0} width={50} format={()=>"-"} key={index} />
                     ):(

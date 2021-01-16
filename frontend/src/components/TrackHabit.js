@@ -7,9 +7,9 @@ import {
 import HomeHeader from './dashboardComponents/Header';
 import HabitCard from './dashboardComponents/HabitCard';
 import NewHabit from './dashboardComponents/NewHabit';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { PlusCircleOutlined, DeleteOutlined } from '@ant-design/icons';
-import { GET_USER_DETAILS } from '../query';
+import { GET_USER_DETAILS, DELECT_HABIT } from '../query';
 
 const loadingStyle = {
     textAlign: 'center',
@@ -25,14 +25,26 @@ export default function TrackHabit () {
     const [visible, setVisible] = React.useState(false);
     const sessionStore = sessionStorage.getItem('HabitTrackerUser');
     const { loading, error, data } = useQuery( GET_USER_DETAILS, { variables: {email:sessionStore} } );
+    const [deleteHabit] = useMutation(DELECT_HABIT);
     const [editHabitDate, setEditData] = React.useState(null);
+
+    const deleteHabitData = () => {
+        deleteHabit({
+            variables: {
+                id: editHabitDate.id
+            },
+            refetchQueries: [{ query: GET_USER_DETAILS, variables: { email: sessionStore } }],
+        });
+        setEditData(null);
+        setVisible(false);
+    }
     const showModal = () => {
         setVisible(true);
     };
 
     const handleCancel = () => {
-        setVisible(false);
         setEditData(null);
+        setVisible(false);
     };
 
     if (loading) {
@@ -74,7 +86,7 @@ export default function TrackHabit () {
                 onCancel={handleCancel}
                 footer={ editHabitDate 
                     ? [
-                    <Button icon={<DeleteOutlined />}>
+                    <Button onClick={deleteHabitData} icon={<DeleteOutlined />}>
                         Delete
                     </Button>,
                     <Button form="new_habit" key="submit" htmlType="submit">

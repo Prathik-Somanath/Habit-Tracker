@@ -36,3 +36,11 @@ export const EDIT_HABIT = gql `
         }
     }  
 `;
+
+export const DELECT_HABIT = gql `
+    mutation DeleteHabit($id: uuid!) {
+        delete_habits_by_pk(id: $id) {
+        id
+        }
+    }
+`;
