@@ -8,9 +8,7 @@ import { BrowserRouter as Router,
          Redirect,
          useHistory
 } from 'react-router-dom';
-import { gql, useLazyQuery } from '@apollo/client';
 import 'antd/dist/antd.css';
-import { StateProvider, store } from './store';
 
 //Apollo client object. Used to make requests to the graphql API.
 const client = new ApolloClient({
@@ -23,10 +21,8 @@ const client = new ApolloClient({
 
 function PrivateRoute({ children, ...rest }) {
 
-  const { state, dispatch } = React.useContext(store);
   const sessionStore = sessionStorage.getItem('HabitTrackerUser');      // session storage user's emailID
-  const [ isAuthenticated, setAuthenticated ] = React.useState( !!state.full_name || !!sessionStore);
-  const history = useHistory();
+  const [ isAuthenticated, setAuthenticated ] = React.useState(!!sessionStore);
 
   return (
     <Route
@@ -49,7 +45,6 @@ function PrivateRoute({ children, ...rest }) {
 function App() {
 
   return (
-   <StateProvider>
       <ApolloProvider client={client}>
          <Router>
              <Switch>
@@ -62,7 +57,6 @@ function App() {
              </Switch>
          </Router>
       </ApolloProvider>
-   </StateProvider>
   );
 }
 

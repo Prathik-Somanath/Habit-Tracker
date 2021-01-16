@@ -212,7 +212,6 @@ export default function Login() {
 
     //function to handle login/registration form submission
     const onFinish = values => {
-        console.log('Success:', values);
         if(page){
             setRegister(values);
             //query to check if given user already exists

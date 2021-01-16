@@ -17,7 +17,7 @@ export const GET_USER_DETAILS = gql `
         start_date
         streak
         unit
-        history{
+        history(limit: 7, order_by: {date: desc}){
             id
             date
             val
