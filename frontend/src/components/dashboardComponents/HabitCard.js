@@ -3,8 +3,8 @@ import {
   Card, 
   Progress 
 } from 'antd';
-import { format, getDay } from 'date-fns'
 import { ArrowsAltOutlined } from '@ant-design/icons';
+import { format, getDay, sub, isEqual, isBefore } from 'date-fns'
 
 const progress = {
   display: 'flex',
@@ -12,30 +12,49 @@ const progress = {
   justifyContent: 'space-between'
 }
 
-const circle = (day) => {
-  // console.log(':::::::',  day)
-  return day
-}
+const valEdit = (val,unit,reps) =>{
+  switch(unit){
+    case 'CHECK':  val = (val===1? 100 : 0);
+                   break;
+    default: val = (val/reps)*100;                      
+  }
+  return val;
+};
 
 export default function HabitCard({habitData, setEditData, showModal}) {
-
-  habitData.history.forEach((data)=>{
-    var date = data.date.split('-');
-    // console.log('history:::::::::::::',format(new Date(date), "iii"))
-  })
-  const [dayStatus, setStatus] = React.useState(false);
-  // console.log('habitData: ',habitData)
+  console.log(habitData);
   const days = ['Sun','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const order = [];
-  const today = new Date();
-  let today_index = getDay(today);
-  for(let i=0;i<days.length;i++){
-     order.push(today_index);
-     if(today_index === 0)
-      today_index = 6;
-     else
-      today_index--; 
+  const card_data = [];
+  let day_pointer = new Date();
+  habitData.history.forEach(ele => {
+    let info = {
+      day_index: getDay(day_pointer),
+    };
+    if(isEqual(day_pointer,new Date(ele.date))){
+      info.val = valEdit(ele.val,habitData.unit,habitData.reps);
+      card_data.push(info);
+      day_pointer = sub(day_pointer,{days:1});
+    }
+  });
+  for(let i=card_data.length;i<days.length;i++ ){
+    let info = {
+      day_index: getDay(day_pointer),
+    };
+    if(isBefore(day_pointer,new Date(habitData.start_date)))
+      info.val = -1;
+    else
+      info.val = 0; 
+    card_data.push(info);
+    day_pointer = sub(day_pointer,{days:1});   
   }
+
+  const circle = (val) => {
+    if(habitData.unit === 'REPS')
+      return `${(val/100)*habitData.reps}/${habitData.reps}`
+    else
+      return `${(val/100)*habitData.reps} min`
+  }  
+    
     return (
       <div className="site-card-border-less-wrapper" style={{paddingRight:30, paddingBottom: 30}}>
         <Card 
@@ -54,10 +73,19 @@ export default function HabitCard({habitData, setEditData, showModal}) {
           style={{ width: 500 }}>
           <div style={progress}>
             {
-              order.map((day_index,index)=>(
-                <div key={index} onClick={()=>setStatus(true)} >
-                  <Progress type="circle" percent={100} width={50} format={circle} key={index} />
-                  <p>{days[day_index]}</p>
+              card_data.map((info,index)=>(
+                <div key={index} >
+                  {
+                    info.val===0 || info.val===100 ? (
+                      <Progress type="circle" percent={info.val} width={50} status={info.val === 0 ? 'exception':'normal'} key={index} />
+                    ):( info.val === -1 ? (
+                      <Progress trailColor="#808080" type="circle" percent={0} width={50} format={()=>"-"} key={index} />
+                    ):(
+                      <Progress type="circle" percent={info.val} width={50} format={circle} key={index} />
+                    ) 
+                    )
+                  }
+                  <p>{days[info.day_index]}</p>
                 </div>
               ))
             }
