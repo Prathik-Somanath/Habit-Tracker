@@ -1,11 +1,12 @@
 import React from 'react';
 import { gql, useMutation, useLazyQuery } from '@apollo/client';
-import { Card, Input, Layout, Form, Button, Carousel, Row, Col, notification } from 'antd';
+import { Card, Input, Layout, Form, Button, Carousel, Row, Col, notification, Typography} from 'antd';
 import { useHistory } from 'react-router-dom';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { StyleSheet, css } from 'aphrodite';
 import { store } from '../store';
 
+const { Title } = Typography;
 const { Header, Content } = Layout;
 const { Meta } = Card;
 
@@ -23,11 +24,20 @@ const styles = StyleSheet.create({
     },
     header: {
         marginBottom: '5vh'
+    },
+    carouselCard: {
+        height:'50vh',
+        width:'40vw',
+    },
+    textmargin:{
+        marginTop:'20px',
+        marginLeft:'10vw',
     }
 })
 
 const contentStyle = {
-    height: '25vh',
+    height: '40vh',
+    width: '40vw',
   };
 
 const headerStyle = {
@@ -39,10 +49,19 @@ const headerStyle = {
 //functional component for the image carousel on the login page.
 const HabitCarousel = () => {
     return (
-        <Carousel autoplay style={{marginTop: '20vh' }}>
-            <img alt="stepping up" src="SVG/stepup.svg" style={contentStyle} />
-            <img alt="goals" src="SVG/goals.svg" style={contentStyle} />
-            <img alt="target" src="SVG/target.svg" style={contentStyle} />
+        <Carousel autoplay style={{marginTop: '20vh', width:'40vw',height:'50vh'}}>
+            <div className={css(styles.carouselCard)}>
+                <img alt="stepping up" src="SVG/stepup.svg" style={contentStyle} />
+                <Title level={5} className={css(styles.textmargin)} >Step Up in life developing a healthy habit</Title>
+            </div>
+            <div className={css(styles.carouselCard)}>
+                <img alt="goals" src="SVG/goals.svg" style={contentStyle} />
+                <Title level={5} className={css(styles.textmargin)} >Reach your Goals by making them your habits</Title>
+            </div>
+            <div className={css(styles.carouselCard)}>
+                <img alt="target" src="SVG/target.svg" style={contentStyle} />
+                <Title level={5} className={css(styles.textmargin)} >Hit your targets by practising with Habit tracker</Title>
+            </div>
         </Carousel>
     )
 }
@@ -247,8 +266,8 @@ export default function Login() {
             </Header>
             <Content style={{ padding: '0 50px' }}>
                 <Row>
-                    <Col span={4} />
-                    <Col span={7} >
+                    <Col span={2} />
+                    <Col span={9} >
                         < HabitCarousel />      
                     </Col>
                     <Col span={13} >
