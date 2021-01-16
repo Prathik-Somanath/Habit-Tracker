@@ -4,6 +4,7 @@ import {
   Progress 
 } from 'antd';
 import { format, getDay } from 'date-fns'
+import { ArrowsAltOutlined } from '@ant-design/icons';
 
 const progress = {
   display: 'flex',
@@ -16,8 +17,8 @@ const circle = (day) => {
   return day
 }
 
-export default function HabitCard({habitData}) {
-  console.log(habitData);
+export default function HabitCard({habitData, setEditData, showModal}) {
+
   habitData.history.forEach((data)=>{
     var date = data.date.split('-');
     // console.log('history:::::::::::::',format(new Date(date), "iii"))
@@ -37,7 +38,20 @@ export default function HabitCard({habitData}) {
   }
     return (
       <div className="site-card-border-less-wrapper" style={{paddingRight:30, paddingBottom: 30}}>
-        <Card title={habitData.name} bordered={true} style={{ width: 500 }}>
+        <Card 
+          hoverable
+          title={habitData.name} 
+          extra={
+            <ArrowsAltOutlined 
+              onClick={ () => {
+                setEditData(habitData);
+                showModal();
+              }} 
+              style={{ fontSize: 25 }} 
+            />
+          } 
+          bordered={true} 
+          style={{ width: 500 }}>
           <div style={progress}>
             {
               order.map((day_index,index)=>(
