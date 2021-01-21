@@ -44,3 +44,23 @@ export const DELETE_HABIT = gql `
         }
     }
 `;
+
+export const FINISH_HABIT = gql `
+    mutation FinishHabit($id: uuid!, $user: String!, $val: Int!, $date: date!) {
+        insert_history_one(object: {habit: $id, user: $user, val: $val, date: $date}) {
+        id
+        }
+    }
+`;
+
+export const ALL_HABITS = gql`
+    query all_habits($user: String!){
+        habits(where: {user: {_eq: $user}}) {
+          end_date
+          name
+          reps
+          streak
+          start_date
+          unit
+        }
+    }`;
