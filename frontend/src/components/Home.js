@@ -15,7 +15,7 @@ import { BrowserRouter as Router,
     Link,
     Route,
     Switch,
-    useHistory,
+    useHistory
 } from 'react-router-dom';
 import TrackHabit from './TrackHabit';
 import AllHabits from './AllHabit';
@@ -102,7 +102,7 @@ export default function Home () {
                 </Menu.Item>
                 <Menu.Item key="4" icon={<LogoutOutlined />} onClick={()=>{
                     sessionStorage.clear();
-                    history.push('/login');
+                    history.push();
                 }}>
                     Logout
                 </Menu.Item>
