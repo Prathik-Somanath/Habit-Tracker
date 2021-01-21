@@ -18,6 +18,7 @@ import { BrowserRouter as Router,
     useHistory
 } from 'react-router-dom';
 import TrackHabit from './TrackHabit';
+import AllHabits from './AllHabit';
 import HabitHistory from './HabitHistory';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -91,9 +92,13 @@ export default function Home () {
                     {user.full_name}
                     <Link to="/" />
                 </Menu.Item>
-                <Menu.Item key="2" icon={<FormOutlined/>}>
+                <Menu.Item key="2" icon={<BarChartOutlined />}>
+                    All Habits
+                    <Link to="/all" />
+                </Menu.Item>
+                <Menu.Item key="3" icon={<FormOutlined />}>
                     History
-                    <Link to="/history"/>
+                    <Link to="/HabitHistory" />
                 </Menu.Item>
                 <Menu.Item key="4" icon={<LogoutOutlined />} onClick={()=>{
                     sessionStorage.clear();
@@ -107,7 +112,8 @@ export default function Home () {
             <Content style={{ margin: '24px 16px 0', overflow: 'initial', flex:1, height: '100vh' }}>
                 <Switch>
                     <Route exact path="/" component={TrackHabit} />
-                    <Route exact path="/history" component={HabitHistory} />
+                    <Route exact path="/all" component={AllHabits} />
+                    <Route exact path="/HabitHistory" component={HabitHistory} />
                 </Switch>
             </Content>
             </Layout>

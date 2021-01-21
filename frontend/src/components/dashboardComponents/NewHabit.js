@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { format } from 'date-fns'
 import moment from 'moment';
 import { 
-    Typography, 
     Form, 
     DatePicker, 
     Select,
@@ -38,6 +37,10 @@ const ADD_NEW_HABIT = gql`
         }
     }
 `;
+
+const disabledDate = current => {
+    return current && current < moment().subtract(1, 'days');
+  }
 
 export default function NewHabit({ setVisible, userID, editHabitDate }) {
 
@@ -122,7 +125,7 @@ export default function NewHabit({ setVisible, userID, editHabitDate }) {
                 rules={[{ required: true, message: "Please Select date!" }]}
                 initialValue={editHabitDate ? [moment(editHabitDate.start_date), moment(editHabitDate.end_date)] : ""}
             >
-                <RangePicker />
+                <RangePicker disabledDate={disabledDate} />
             </Form.Item>
             { (habitType === 'REPS' || editHabitDate && editHabitDate.unit === 'REPS') &&
                 <Form.Item 

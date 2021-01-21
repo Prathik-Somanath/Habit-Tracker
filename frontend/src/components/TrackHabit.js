@@ -4,6 +4,7 @@ import {
     Modal,
     Button
  } from 'antd';
+import { format } from 'date-fns';
 import HomeHeader from './dashboardComponents/Header';
 import HabitCard from './dashboardComponents/HabitCard';
 import NewHabit from './dashboardComponents/NewHabit';
@@ -71,8 +72,7 @@ export default function TrackHabit () {
             <div className="site-layout-background" style={{ padding: 34, textAlign: 'center', display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
                 {
                     user.habits.map((data, index) => {
-
-                        return <HabitCard habitData={data} key={index} setEditData={setEditData} showModal={showModal}/>
+                        return data.end_date > format(new Date(), "yyyy-MM-dd") && <HabitCard habitData={data} key={index} setEditData={setEditData} showModal={showModal}/>
                     })
                 }
             </div>
