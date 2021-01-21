@@ -15,9 +15,10 @@ import { BrowserRouter as Router,
     Link,
     Route,
     Switch,
-    useHistory,
+    useHistory
 } from 'react-router-dom';
 import TrackHabit from './TrackHabit';
+import HabitHistory from './HabitHistory';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -90,9 +91,13 @@ export default function Home () {
                     {user.full_name}
                     <Link to="/" />
                 </Menu.Item>
+                <Menu.Item key="2" icon={<FormOutlined/>}>
+                    History
+                    <Link to="/history"/>
+                </Menu.Item>
                 <Menu.Item key="4" icon={<LogoutOutlined />} onClick={()=>{
                     sessionStorage.clear();
-                    history.push('/login');
+                    history.push();
                 }}>
                     Logout
                 </Menu.Item>
@@ -102,6 +107,7 @@ export default function Home () {
             <Content style={{ margin: '24px 16px 0', overflow: 'initial', flex:1, height: '100vh' }}>
                 <Switch>
                     <Route exact path="/" component={TrackHabit} />
+                    <Route exact path="/history" component={HabitHistory} />
                 </Switch>
             </Content>
             </Layout>

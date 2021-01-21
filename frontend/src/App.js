@@ -22,13 +22,12 @@ const client = new ApolloClient({
 function PrivateRoute({ children, ...rest }) {
 
   const sessionStore = sessionStorage.getItem('HabitTrackerUser');      // session storage user's emailID
-  const [ isAuthenticated, setAuthenticated ] = React.useState(!!sessionStore);
 
   return (
     <Route
       {...rest}
       render={() =>
-        isAuthenticated ? (
+        !!sessionStore ? (
           children
         ) : (
           <Redirect

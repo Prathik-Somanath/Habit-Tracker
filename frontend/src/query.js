@@ -44,3 +44,15 @@ export const DELETE_HABIT = gql `
         }
     }
 `;
+
+export const ALL_HABITS = gql`
+    query all_habits($user: String!){
+        habits(where: {user: {_eq: $user}}) {
+          end_date
+          name
+          reps
+          streak
+          start_date
+          unit
+        }
+    }`;
