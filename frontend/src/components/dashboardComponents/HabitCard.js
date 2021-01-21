@@ -22,7 +22,7 @@ const valEdit = (val,unit,reps) =>{
 };
 
 export default function HabitCard({habitData, setEditData, showModal}) {
-  console.log(habitData);
+  console.log('Habitdata::::::',habitData);
   const days = ['Sun','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const card_data = [];
   let day_pointer = new Date();
@@ -107,9 +107,7 @@ export default function HabitCard({habitData, setEditData, showModal}) {
             {/* <Progress type="circle" percent={70} width={80} status="exception" />
             <Progress type="circle" percent={100} width={80} /> */}
           </div>
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
+          <p>Remainder note: {habitData.remainder_note}</p>
         </Card>
       </div>
     )
