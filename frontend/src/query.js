@@ -64,3 +64,11 @@ export const ALL_HABITS = gql`
           unit
         }
     }`;
+
+export const EDIT_HISTORY = gql`
+    mutation UpdateHistory ($id: uuid!, $val: Int) {
+        update_history_by_pk(pk_columns:{id: $id}, _set:{val:$val}){
+        id
+        }
+    }
+`;

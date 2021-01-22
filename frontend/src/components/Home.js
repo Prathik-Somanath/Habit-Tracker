@@ -18,7 +18,7 @@ import { BrowserRouter as Router,
     useHistory
 } from 'react-router-dom';
 import TrackHabit from './TrackHabit';
-import AllHabits from './AllHabit';
+import Progress from './Progress';
 import HabitHistory from './HabitHistory';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -93,7 +93,7 @@ export default function Home () {
                     <Link to="/" />
                 </Menu.Item>
                 <Menu.Item key="2" icon={<BarChartOutlined />}>
-                    All Habits
+                    Progress
                     <Link to="/all" />
                 </Menu.Item>
                 <Menu.Item key="3" icon={<FormOutlined />}>
@@ -112,7 +112,7 @@ export default function Home () {
             <Content style={{ margin: '24px 16px 0', overflow: 'initial', flex:1, height: '100vh' }}>
                 <Switch>
                     <Route exact path="/" component={TrackHabit} />
-                    <Route exact path="/all" component={AllHabits} />
+                    <Route exact path="/all" component={Progress} />
                     <Route exact path="/HabitHistory" component={HabitHistory} />
                 </Switch>
             </Content>

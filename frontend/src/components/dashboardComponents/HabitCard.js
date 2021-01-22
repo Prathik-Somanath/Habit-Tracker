@@ -1,12 +1,14 @@
 import React from 'react';
 import { 
   Card, 
-  Progress 
+  Progress,
+  Button,
+  InputNumber
 } from 'antd';
 import { getDay, sub, isBefore, differenceInCalendarDays } from 'date-fns';
 import { ArrowsAltOutlined } from '@ant-design/icons';
 import { useMutation } from '@apollo/client'
-import { FINISH_HABIT, GET_USER_DETAILS } from '../../query';
+import { FINISH_HABIT, GET_USER_DETAILS, EDIT_HISTORY } from '../../query';
 import { format } from 'date-fns'
 
 const progress = {
@@ -28,9 +30,12 @@ const valEdit = (val,unit,reps,dur) =>{
 };
 
 export default function HabitCard({habitData, setEditData, showModal}) {
-  // console.log('Habitdata::::::',habitData);
+  console.log('Habitdata::::::',habitData.history[0]);
   const userID = sessionStorage.getItem('HabitTrackerUser');
   const [ finishHabit ] = useMutation(FINISH_HABIT);
+  const [ editHabit ] = useMutation(EDIT_HISTORY);
+  const curDate = !!(habitData.history[0] && (habitData.history[0].date)===format(new Date(), "yyyy-MM-dd")); //boolean
+  const goalCount = (habitData.reps) ? habitData.reps : habitData.duration;
   const days = ['Sun','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const card_data = [];
   let day_pointer = new Date();
@@ -70,7 +75,7 @@ export default function HabitCard({habitData, setEditData, showModal}) {
       return `${(val/100)*habitData.reps}/${habitData.reps} min`
   }  
 
-  const checkClicked = (val) => {
+  const checkClicked = () => {
     console.log('clicked');
     finishHabit({
       variables: {
@@ -83,13 +88,37 @@ export default function HabitCard({habitData, setEditData, showModal}) {
     })
   }
 
+  const increaseCount = (val) => {
+    // console.log('clicked:', val, curDate)
+    (curDate)
+    ? 
+      !!val && editHabit({
+        variables: {
+          id: habitData.history[0].id,
+          val: val
+        },
+        refetchQueries: [{ query: GET_USER_DETAILS, variables: { email: userID } }]
+      })
+    :
+      !!val && finishHabit({
+        variables: {
+          id: habitData.id,
+          user: userID,
+          val: val,
+          date: format(new Date(), "yyyy-MM-dd")
+        },
+        refetchQueries: [{ query: GET_USER_DETAILS, variables: { email: userID } }]
+      })
+  }
+
   console.log('card data:',card_data, habitData);
     
     return (
       <div className="site-card-border-less-wrapper" style={{paddingRight:30, paddingBottom: 30}}>
         <Card 
           hoverable
-          title={habitData.name} 
+          title={habitData.name}
+          headStyle={{fontSize:20, fontWeight:'bold'}}
           extra={
             <ArrowsAltOutlined 
               onClick={ () => {
@@ -102,6 +131,30 @@ export default function HabitCard({habitData, setEditData, showModal}) {
           bordered={true} 
           style={{ width: 500 }}
         >
+          { (habitData.unit ==='CHECK')
+            ?
+              <Button 
+                style={{position:'absolute', left:30}}
+                onClick={()=>checkClicked()}
+                disabled={curDate}
+              > 
+                {curDate ? "Completed" : "Done" }
+              </Button>
+            :
+              <InputNumber 
+                style={{position:'absolute', left:30}} 
+                min={0}
+                max={goalCount}
+                disabled={curDate && (habitData.history[0].val===goalCount)}
+                onChange={increaseCount}
+                defaultValue={curDate ? habitData.history[0].val : null}
+                formatter={value=> (value==goalCount) ?  `Completed`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : value}
+                // parser={value => value.replace('Completed', '')}
+                // formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                placeholder={(habitData.unit==='REPS') ? "Reps" : "Mins"}
+              />
+          }
           <p style={{ position:'relative', left:150, paddingBottom:10 }} > 
             {(habitData.unit!=='CHECK')
               ? (habitData.reps) 
@@ -116,7 +169,7 @@ export default function HabitCard({habitData, setEditData, showModal}) {
                 <div key={index} >
                   {
                     index === 0 && info.val === 0 ? (
-                      <Progress type="circle" trailColor="#ffb95a" percent={0} width={50}  format={()=>"-"} key={index} onClick={()=> (habitData.unit==='CHECK') && checkClicked(info.val)} />
+                      <Progress type="circle" trailColor="#ffb95a" percent={0} width={50}  format={()=>"-"} key={index} onClick={()=> (habitData.unit==='CHECK') && checkClicked()} />
                     ):(
                       info.val===0 || info.val===100 ? (
                         <Progress type="circle" percent={info.val} width={50} status={info.val === 0 ? 'exception':'success'} key={index} />
@@ -136,7 +189,7 @@ export default function HabitCard({habitData, setEditData, showModal}) {
             {/* <Progress type="circle" percent={70} width={80} status="exception" />
             <Progress type="circle" percent={100} width={80} /> */}
           </div>
-          <p>Remainder note: {habitData.remainder_note}</p>
+          <p style={{marginTop:15}}>Remainder note: {habitData.remainder_note}</p>
         </Card>
       </div>
     )

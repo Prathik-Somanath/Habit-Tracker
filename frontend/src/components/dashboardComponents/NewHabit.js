@@ -134,7 +134,7 @@ export default function NewHabit({ setVisible, userID, editHabitDate }) {
                     rules={[{ required: true, message: "Please Select Reps no.!" }]}
                     initialValue={editHabitDate ? editHabitDate.reps : ""}
                 >
-                    <InputNumber/>
+                    <InputNumber min={1}/>
                 </Form.Item>
             }
             { (habitType === 'DURATION' || editHabitDate && (editHabitDate.unit === 'DURATION')) &&
@@ -144,7 +144,7 @@ export default function NewHabit({ setVisible, userID, editHabitDate }) {
                     rules={[{ required: true, message: "Please Select Duration!" }]}
                     initialValue={editHabitDate ? editHabitDate.duration : ""}
                 >
-                    <InputNumber />
+                    <InputNumber min={1}/>
                 </Form.Item>
             }
             <Form.Item
