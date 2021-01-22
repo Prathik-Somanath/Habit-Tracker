@@ -119,7 +119,7 @@ export default function HabitCard({habitData, setEditData, showModal}) {
       <div className="site-card-border-less-wrapper" style={{paddingRight:30, paddingBottom: 30}}>
         <Card 
           hoverable
-          title={habitData.name}
+          title={<p style={{fontFamily:'Exo 2',fontWeight:400,fontSize:'20pt',fontStyle:'italic', margin:0}}>{habitData.name}</p>}
           headStyle={{fontSize:20, fontWeight:'bold'}}
           extra={
             <ArrowsAltOutlined 
