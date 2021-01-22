@@ -51,7 +51,7 @@ export default function HabitCard({habitData, setEditData, showModal}) {
         day_pointer = sub(day_pointer,{days:1});
       }
       info.day_index = getDay(record);
-      info.val = valEdit(ele.val,habitData.units,habitData.reps,habitData.reps);
+      info.val = valEdit(ele.val,habitData.unit,habitData.reps,habitData.duration);
       card_data.push(info);
       day_pointer = sub(day_pointer,{days:1});
     }
@@ -70,9 +70,11 @@ export default function HabitCard({habitData, setEditData, showModal}) {
 
   const circle = (val) => {
     if(habitData.unit === 'REPS')
-      return `${(val/100)*habitData.reps}/${habitData.reps}`
+      return `${(val/100)*habitData.reps}/${habitData.reps}`;
     else if(habitData.unit === 'DURATION')
-      return `${(val/100)*habitData.reps}/${habitData.reps} min`
+      return `${(val/100)*habitData.duration}/${habitData.duration} min`;
+    else
+      return val;
   }  
 
   const checkClicked = () => {
