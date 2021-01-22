@@ -59,6 +59,7 @@ export const ALL_HABITS = gql`
           end_date
           name
           reps
+          duration
           streak
           start_date
           unit

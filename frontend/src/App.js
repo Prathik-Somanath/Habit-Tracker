@@ -50,7 +50,7 @@ function App() {
                  <Route exact path="/login">
                      <Login />
                  </Route>
-                 <PrivateRoute exact path="/">
+                 <PrivateRoute path="/">
                      <Home />
                  </PrivateRoute>
              </Switch>

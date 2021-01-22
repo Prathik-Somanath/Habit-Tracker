@@ -23,27 +23,34 @@ export default function HabitHistory() {
             title:'Name',
             dataIndex:'name',
             key:'name',
+            align:'center',
         },
         {
             title:'Iteration',
             dataIndex:'iteration',
             key:'iteration',
+            width: 170,
+            align:'center',
         },
         {
             title:'Start Date',
             dataIndex:'start',
             key:'start',
+            align:'center',
         },
         {
             title:'End Date',
             dataIndex:'end',
             key:'end',
+            align:'center',
         },
         
         {
             title:'Streak',
             dataIndex:'streak',
             key:'streak',
+            width:100,
+            align:'center',
         },
         {
             title:'Status',
@@ -61,7 +68,8 @@ export default function HabitHistory() {
                       {tag.toUpperCase()}
                     </Tag>
                   );
-            }
+            },
+            align:'center',
         }
     ];
 
@@ -90,7 +98,7 @@ export default function HabitHistory() {
         data.habits.forEach(val => {
             const row = {
                 name: val.name,
-                iteration: (val.unit ==='CHECK')?'-':((val.unit === 'DURATION')?val.duration:val.reps),
+                iteration: (val.unit ==='CHECK')?'1':((val.unit === 'DURATION')?val.duration+' min(s)':val.reps),
                 start: val.start_date,
                 end: val.end_date,
                 streak: (isBefore(new Date(val.end_date),new Date()))?'-':val.streak,
@@ -101,8 +109,23 @@ export default function HabitHistory() {
    }
 
     return (
-        <div>
-            <Table columns={columns} dataSource={tableData} loading={loading} sticky style={{height:'50%',width:'50%'}}/>
+        <div style={{
+            display:'flex',
+            justifyContent:'center',
+            height:'100%'
+        }}>
+            <Table 
+                title={()=>(<p style={{
+                    fontFamily:'Krona One',
+                    fontSize:'20pt',
+                    fontWeight:500,
+                    marginBottom:0
+                }}>Your Habit History</p>)}
+                columns={columns} 
+                dataSource={tableData}
+                style={{height:'80%',width:'80%'}} 
+                pagination={{defaultPageSize:10}}
+            />
         </div>
     )
 }
