@@ -26,8 +26,7 @@ export default function Header() {
 
     return (
         <div style={headerContainer}>
-            <Title level={3}>{curTime}</Title>
-            <CalendarOutlined style={calendar}/>
+            <Title level={3} style={{fontFamily:'Krona One', fontWeight:500}}>{curTime}</Title>
         </div>
     )
 }
