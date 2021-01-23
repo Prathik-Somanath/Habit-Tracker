@@ -29,7 +29,7 @@ const GET_HABIT_DATE = gql `
 `
 const GET_ALL_HABITS_DATE = gql`
     query GetAllHabitDate($user: String!) {
-        habits(where: {user: {_eq: $user}}){
+        habits(where: {user: {_eq: $user}}, order_by:{create_at:desc}){
         id
         name
         start_date
@@ -103,7 +103,7 @@ export default function AllHabits () {
         <>
             <h2 style={{marginLeft:25}}>All Habits</h2>
             <Select 
-                defaultValue={data.habits[0].id} 
+                defaultValue={'select habit'} 
                 style={{width:130, margin:20, marginBottom:40, marginTop:25}} 
                 onChange={handleChange}
             >
