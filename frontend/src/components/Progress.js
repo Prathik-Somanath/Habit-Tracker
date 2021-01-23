@@ -7,6 +7,7 @@ import { useQuery, gql } from '@apollo/client';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 import ReactTooltip from 'react-tooltip';
+import { subMonths } from 'date-fns'
 
 const { Option } = Select;
 const loadingStyle = {
@@ -53,8 +54,8 @@ export default function AllHabits () {
     const { loading, error, data } = useQuery( GET_ALL_HABITS_DATE, { variables: {user:userID} } );
     const [showHabit, setShowHabit] = React.useState([]);
     const [DateRange, setDateRange] = React.useState({
-        startDate: new Date('2021-01-01'),
-        endDate: new Date('2021-12-31')
+        startDate: subMonths(new Date(), 12),
+        endDate: new Date()
     })
     
     // console.log('data : ', data.habits[0].history)
