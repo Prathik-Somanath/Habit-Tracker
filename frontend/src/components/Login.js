@@ -239,9 +239,9 @@ export default function Login() {
 
     return (
         <Layout className={css(styles.wrapper)} >
-            <Header>
+            <Header style={{display:'flex'}}>
+                <img src="/logo192.png" height="50%" width="3%" alt="logo" style={{margin:'1%',marginLeft:0}}/>
                 <h1 style={headerStyle}>Habit Tracker</h1>
-                <div className="logo" />
             </Header>
             <Content style={{ padding: '0 50px' }}>
                 <Row>

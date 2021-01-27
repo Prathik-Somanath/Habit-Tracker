@@ -1,13 +1,15 @@
 import React from 'react';
 import { 
     Spin,
-    Select
+    Select,
+    Row,
+    Col
 } from 'antd';
 import { useQuery, gql } from '@apollo/client';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 import ReactTooltip from 'react-tooltip';
-import { subMonths } from 'date-fns'
+import { addDays, format, isBefore, subMonths } from 'date-fns'
 
 const { Option } = Select;
 const loadingStyle = {
@@ -34,6 +36,9 @@ const GET_ALL_HABITS_DATE = gql`
         id
         name
         start_date
+        unit
+        reps
+        duration
         end_date
         history{
             date
@@ -53,8 +58,9 @@ export default function AllHabits () {
     // const { loading, error, data } = useQuery( GET_HABIT_DATE, { variables: {id:"4c74e9cc-5dff-4f68-94e2-ad296a1d4d93"} } );
     const { loading, error, data } = useQuery( GET_ALL_HABITS_DATE, { variables: {user:userID} } );
     const [showHabit, setShowHabit] = React.useState([]);
+    const [curHabit, setCurHabit] = React.useState(null);
     const [DateRange, setDateRange] = React.useState({
-        startDate: subMonths(new Date(), 12),
+        startDate: subMonths(new Date(),6),
         endDate: new Date()
     })
     
@@ -66,12 +72,23 @@ export default function AllHabits () {
         //     startDate: hab[0].start_date,
         //     endDate: hab[0].end_date
         // })
-        const formattedHab = hab[0].history.map(data => ({ 
-            date: data.date,
-            count: data.val
-        }));
+        const formattedHab = [];
+        hab[0].history.forEach(element => {
+           formattedHab.push({
+               date: element.date,
+               count: element.val
+           }) 
+        });
+        for(let i=DateRange.startDate;isBefore(i,new Date(hab[0].start_date));i=addDays(i,1)){
+            formattedHab.push({
+                date: format(i,'yyyy-MM-dd'),
+                count: -1
+            });
+        }
         console.log("asdasdasd", formattedHab)
         setShowHabit(formattedHab);
+        console.log('curHab ->',hab[0]);
+        setCurHabit(hab[0]);
     }
 
     if (loading) {
@@ -91,7 +108,7 @@ export default function AllHabits () {
         )
     }
 
-    {   
+       
         // const testing = data.habits.map(
 
         // )
@@ -102,7 +119,7 @@ export default function AllHabits () {
         // console.log('formated data:::::::::::;',formatedDate);
         return (
         <>
-            <h2 style={{marginLeft:25}}>All Habits</h2>
+            <h2 style={{marginLeft:25,fontSize:'20pt'}}>Habit Progress Dashboard </h2>
             <Select 
                 defaultValue={'select habit'} 
                 style={{width:130, margin:20, marginBottom:40, marginTop:25}} 
@@ -114,29 +131,51 @@ export default function AllHabits () {
                     )
                 }
             </Select>
-            <div style={{height:'70%', width:'70%'}}>
-            <CalendarHeatmap
-                startDate={DateRange.startDate}
-                endDate={DateRange.endDate}
-                values={showHabit}
-                showWeekdayLabels={true}
-                onClick={(val)=>val && alert(val.count)}
-                tooltipDataAttrs={ (value) => {
-                    value.date && console.log(value)
-                    return {
-                      'data-tip': (value.date) ? `date: ${value.date} and count is ${value.count}` : "empty",
-                    };
-                  }}
-                  classForValue={value => {
-                    if (!value) {
-                      return 'color-empty';
-                    }
-                    return `color-github-${value.count}`;
-                  }}
-            />
-            <ReactTooltip />
+            <div style={{height:'30%', width:'70%'}}>
+                <Row>
+                    <Col span={24}>
+                        <h2 style={{marginLeft:25,fontSize:'16pt'}}>Progress Heatmap</h2>
+                        <CalendarHeatmap
+                            startDate={DateRange.startDate}
+                            endDate={DateRange.endDate}
+                            values={showHabit}
+                            showWeekdayLabels={true}
+                            onClick={(val)=>val && alert(val.count)}
+                            tooltipDataAttrs={ (value) => {
+                                return {
+                                  'data-tip': (value.date) ? `date: ${value.date} and count is ${value.count}` : "incomplete",
+                                };
+                              }}
+                              classForValue={value => {
+                                if(!!curHabit){
+                                   if(!!value){
+                                    switch(curHabit.unit){
+                                        case 'CHECK': if(value.count === 1)
+                                                        return 'color-scale-success';
+                                                      else
+                                                        return 'color-scale-invalid';  
+                                        default: console.log(value.count); 
+                                                if(value.count ===((curHabit.unit==='REPS')?(curHabit.reps):(curHabit.duration)))
+                                                    return 'color-scale-success';
+                                                 else if (value.count > 0)
+                                                    return 'color-scale-partial'; 
+                                                 else
+                                                    return 'color-scale-invalid';                             
+                                    }
+                                   }
+                                   else{
+                                       return 'color-scale-failure';
+                                   }
+                                }
+                                else{
+                                    return 'color-empty';
+                                }
+                              }}
+                        />
+                        <ReactTooltip />
+                    </Col>
+                </Row>
             </div>
         </>
         )
-    }
 }

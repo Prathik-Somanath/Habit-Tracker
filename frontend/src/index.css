@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.react-calendar-heatmap .color-scale-success { fill: #00A100; }
+.react-calendar-heatmap .color-scale-failure { fill: #FF0000; }
+.react-calendar-heatmap .color-scale-partial { fill: #128FD9; }
+.react-calendar-heatmap .color-scale-invalid { fill: darkgray; }
