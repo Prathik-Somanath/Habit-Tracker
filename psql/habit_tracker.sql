@@ -33,7 +33,7 @@ CREATE TABLE "habits" (
   "bad_habit" boolean DEFAULT false,
   "habit_cycle" habit_interval[],
   "start_date" date NOT NULL,
-  "createdAt" timestamp DEFAULT (now()),
+  "created_at" timestamp DEFAULT (now()),
   "end_date" date,
   "streak" int DEFAULT 0
 );
