@@ -81,7 +81,7 @@ export default function TrackHabit () {
                 onClick={showModal}
             />
             <Modal
-                title="Add new Habit"
+                title={editHabitDate?"Edit Habit":"Add New Habit"}
                 visible={visible}
                 onCancel={handleCancel}
                 footer={ editHabitDate 

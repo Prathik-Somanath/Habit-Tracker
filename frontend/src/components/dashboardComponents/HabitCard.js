@@ -70,9 +70,9 @@ export default function HabitCard({habitData, setEditData, showModal}) {
 
   const circle = (val) => {
     if(habitData.unit === 'REPS')
-      return `${(val/100)*habitData.reps}/${habitData.reps}`;
+      return `${Math.ceil((val/100)*habitData.reps)}`;
     else if(habitData.unit === 'DURATION')
-      return `${(val/100)*habitData.duration}/${habitData.duration} min`;
+      return `${Math.ceil((val/100)*habitData.duration)}`;
     else
       return val;
   }  
@@ -191,7 +191,7 @@ export default function HabitCard({habitData, setEditData, showModal}) {
             {/* <Progress type="circle" percent={70} width={80} status="exception" />
             <Progress type="circle" percent={100} width={80} /> */}
           </div>
-          <p style={{marginTop:15}}>Remainder note: {habitData.remainder_note}</p>
+          <p style={{marginTop:15}}>NOTE: {habitData.remainder_note}</p>
         </Card>
       </div>
     )

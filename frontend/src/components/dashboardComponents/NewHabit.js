@@ -30,9 +30,6 @@ const ADD_NEW_HABIT = gql`
     }
 `;
 
-const disabledDate = current => {
-    return current && current < moment().subtract(1, 'days');
-  }
 
 export default function NewHabit({ setVisible, userID, editHabitDate }) {
 
@@ -43,6 +40,16 @@ export default function NewHabit({ setVisible, userID, editHabitDate }) {
     const [habitType, setHabitType] = useState(null);
     const addNewHabit = useMutation(ADD_NEW_HABIT)[0];
     const [editHabit] = useMutation(EDIT_HABIT);
+
+    const disabledDate = current => {
+        if(!!editHabitDate){
+            return current && current < moment().subtract(2,'days');     
+        }
+        else{
+            return current && current < moment().subtract(1, 'days');
+        }    
+    }
+
     const onFinish = (values) => {
         console.log('values:::::::::::::::::::', format(new Date(values.date_range[0]._d), "yyyy-MM-dd"))
         (editHabitDate)
@@ -52,7 +59,7 @@ export default function NewHabit({ setVisible, userID, editHabitDate }) {
                 user_id: userID,
                 habit_name: values.habit_name,
                 type: values.type,
-                start_date: format(new Date(values.date_range[0]._d), "yyyy-MM-dd"),
+                start_date: format(new Date(editHabitDate.start_date),"yyyy-MM-dd"),
                 end_date: format(new Date(values.date_range[1]._d), "yyyy-MM-dd"),
                 reps: values.reps_no ? values.reps_no : null,
                 note: values.note ? values.note : null,
@@ -113,11 +120,17 @@ export default function NewHabit({ setVisible, userID, editHabitDate }) {
             </Form.Item>
             <Form.Item
                 name='date_range'
-                label="Date"
+                label={(!!editHabitDate)?"End Date":"Date"}
                 rules={[{ required: true, message: "Please Select date!" }]}
-                initialValue={editHabitDate ? [moment(editHabitDate.start_date), moment(editHabitDate.end_date)] : ""}
+                initialValue={editHabitDate ? moment(editHabitDate.end_date): ""}
             >
-                <RangePicker disabledDate={disabledDate} />
+                {
+                    (!!editHabitDate)?(
+                       <DatePicker disabledDate={disabledDate} />
+                    ):(
+                        <RangePicker disabledDate={disabledDate} />
+                    )
+                }
             </Form.Item>
             { (habitType === 'REPS' || editHabitDate && editHabitDate.unit === 'REPS') &&
                 <Form.Item 
