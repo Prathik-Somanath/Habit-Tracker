@@ -26,11 +26,14 @@ CREATE TABLE "habits" (
   "user" varchar,
   "name" varchar(50) NOT NULL,
   "unit" habit_unit NOT NULL,
+  "reps" int,
+  "duration" int,
   "remainder_note" varchar,
   "reminder_times" time[],
   "bad_habit" boolean DEFAULT false,
   "habit_cycle" habit_interval[],
   "start_date" date NOT NULL,
+  "createdAt" timestamp DEFAULT (now()),
   "end_date" date,
   "streak" int DEFAULT 0
 );

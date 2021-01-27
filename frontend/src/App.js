@@ -5,14 +5,14 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { BrowserRouter as Router,
          Switch,
          Route,
-         Redirect,
-         useHistory
+         Redirect
 } from 'react-router-dom';
 import 'antd/dist/antd.css';
 
 //Apollo client object. Used to make requests to the graphql API.
 const client = new ApolloClient({
-  uri: 'https://habit-tracker.hasura.app/v1/graphql',
+  // uri: 'https://habit-tracker.hasura.app/v1/graphql',
+  uri: 'http://localhost:8080/v1/graphql',
   cache: new InMemoryCache(),
   headers:{
     'x-hasura-access': process.env.REACT_APP_API_PASS,

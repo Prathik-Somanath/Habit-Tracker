@@ -6,7 +6,7 @@ export const GET_USER_DETAILS = gql `
     full_name
     createdAt
     email
-    habits(order_by:{create_at:desc}) {
+    habits(order_by:{created_at:desc}) {
         bad_habit
         end_date
         habit_cycle
@@ -55,12 +55,11 @@ export const FINISH_HABIT = gql `
 
 export const ALL_HABITS = gql`
     query all_habits($user: String!){
-        habits(where: {user: {_eq: $user}}, order_by:{create_at:desc}) {
+        habits(where: {user: {_eq: $user}}, order_by:{created_at:desc}) {
           end_date
           name
           reps
           duration
-          streak
           start_date
           unit
         }

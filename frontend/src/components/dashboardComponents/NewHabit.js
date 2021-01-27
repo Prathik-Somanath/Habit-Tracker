@@ -7,18 +7,10 @@ import {
     Select,
     InputNumber,
     Input,
-    TimePicker,
-    Button
     } from 'antd';
 import { gql, useMutation } from '@apollo/client'
 import { GET_USER_DETAILS, EDIT_HABIT } from '../../query';
 const { RangePicker } = DatePicker;
-
-const headerContainer = {
-    display:'flex',
-    flexDirection:'row',
-    justifyContent:'space-between'
-}
 
 const ADD_NEW_HABIT = gql`
     mutation AddNewHabit($user_id: String!, $habit_name: String!, $type: habit_unit!, $note: String, $bad_habit: Boolean, $start_date: date, $end_date: date, $reps: Int, $duration: Int) {
@@ -47,13 +39,13 @@ export default function NewHabit({ setVisible, userID, editHabitDate }) {
     const [form] = Form.useForm();
     React.useEffect(()=>{
         form.resetFields();
-    },[editHabitDate])
+    },[editHabitDate,form])
     const [habitType, setHabitType] = useState(null);
-    const [addNewHabit, {data, error}] = useMutation(ADD_NEW_HABIT);
+    const addNewHabit = useMutation(ADD_NEW_HABIT)[0];
     const [editHabit] = useMutation(EDIT_HABIT);
     const onFinish = (values) => {
         console.log('values:::::::::::::::::::', format(new Date(values.date_range[0]._d), "yyyy-MM-dd"))
-        {(editHabitDate)
+        (editHabitDate)
         ? editHabit({
             variables: {
                 id: editHabitDate.id,
@@ -80,7 +72,7 @@ export default function NewHabit({ setVisible, userID, editHabitDate }) {
                 duration: values.duration ? values.duration : null
             },
             refetchQueries: [{ query: GET_USER_DETAILS, variables: { email: userID } }],
-        })}
+        })
         form.resetFields();
         setVisible(false);
     }

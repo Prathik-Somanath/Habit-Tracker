@@ -32,7 +32,7 @@ const GET_HABIT_DATE = gql `
 `
 const GET_ALL_HABITS_DATE = gql`
     query GetAllHabitDate($user: String!) {
-        habits(where: {user: {_eq: $user}}, order_by:{create_at:desc}){
+        habits(where: {user: {_eq: $user}}, order_by:{created_at:desc}){
         id
         name
         start_date

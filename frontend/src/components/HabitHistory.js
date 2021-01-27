@@ -44,14 +44,6 @@ export default function HabitHistory() {
             key:'end',
             align:'center',
         },
-        
-        {
-            title:'Streak',
-            dataIndex:'streak',
-            key:'streak',
-            width:100,
-            align:'center',
-        },
         {
             title:'Status',
             dataIndex:'status',
@@ -101,7 +93,6 @@ export default function HabitHistory() {
                 iteration: (val.unit ==='CHECK')?'1':((val.unit === 'DURATION')?val.duration+' min(s)':val.reps),
                 start: val.start_date,
                 end: val.end_date,
-                streak: (isBefore(new Date(val.end_date),new Date()))?'-':val.streak,
                 status: (isBefore(new Date(val.end_date),new Date()))?'Terminated':'Active'
             }
             tableData.push(row);
