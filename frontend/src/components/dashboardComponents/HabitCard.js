@@ -131,7 +131,7 @@ export default function HabitCard({habitData, setEditData, showModal}) {
             />
           } 
           bordered={true} 
-          style={{ width: 500 }}
+          style={{ width:'30vw' }}
         >
           { (habitData.unit ==='CHECK')
             ?
@@ -157,7 +157,7 @@ export default function HabitCard({habitData, setEditData, showModal}) {
                 placeholder={(habitData.unit==='REPS') ? "Reps" : "Mins"}
               />
           }
-          <p style={{ position:'relative', left:150, paddingBottom:10 }} > 
+          <p style={{ position:'relative', left:'30%', paddingBottom:10 }} > 
             {(habitData.unit!=='CHECK')
               ? (habitData.reps) 
                 ? `Habit Goal: ${habitData.reps} reps/day` 

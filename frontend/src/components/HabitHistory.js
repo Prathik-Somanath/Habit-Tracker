@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table, Tag, Spin } from 'antd';
-import { isBefore } from 'date-fns';
+import { isBefore, addDays } from 'date-fns';
 import { useQuery } from '@apollo/client';
 import {ALL_HABITS} from '../query'; 
 
@@ -93,7 +93,7 @@ export default function HabitHistory() {
                 iteration: (val.unit ==='CHECK')?'1':((val.unit === 'DURATION')?val.duration+' min(s)':val.reps),
                 start: val.start_date,
                 end: val.end_date,
-                status: (isBefore(new Date(val.end_date),new Date()))?'Terminated':'Active'
+                status: (isBefore(addDays(new Date(val.end_date),1),new Date()))?'Terminated':'Active'
             }
             tableData.push(row);
         });

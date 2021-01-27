@@ -15,7 +15,8 @@ import { BrowserRouter as Router,
     Link,
     Route,
     Switch,
-    useHistory
+    useHistory,
+    useLocation
 } from 'react-router-dom';
 import TrackHabit from './TrackHabit';
 import Progress from './Progress';
@@ -51,6 +52,9 @@ export default function Home () {
 
     const sessionStore = sessionStorage.getItem('HabitTrackerUser');
     const history = useHistory();
+    const location = useLocation();
+    const path = location.pathname.split('/');
+    const defaultKey = (path.length > 1)?path[path.length-1]:"1"; 
     const { loading, error, data } = useQuery( getUser, { variables: {email:sessionStore} } );
 
 
@@ -84,7 +88,7 @@ export default function Home () {
             }}
             >
             <div className="logo" />
-            <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+            <Menu theme="dark" mode="inline" defaultSelectedKeys={[defaultKey]}>
                 <Header className="site-layout-background" style={{ padding: 0 }} >
                     <h1 style={headerStyle}>Habit Tracker</h1>
                 </Header>
@@ -92,11 +96,11 @@ export default function Home () {
                     {user.full_name}
                     <Link to="/" />
                 </Menu.Item>
-                <Menu.Item key="2" icon={<BarChartOutlined />}>
+                <Menu.Item key="all" icon={<BarChartOutlined />}>
                     Progress
                     <Link to="/all" />
                 </Menu.Item>
-                <Menu.Item key="3" icon={<FormOutlined />}>
+                <Menu.Item key="HabitHistory" icon={<FormOutlined />}>
                     History
                     <Link to="/HabitHistory" />
                 </Menu.Item>

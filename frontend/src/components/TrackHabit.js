@@ -72,7 +72,7 @@ export default function TrackHabit () {
             <div className="site-layout-background" style={{ padding: 34, textAlign: 'center', display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
                 {
                     user.habits.map((data, index) => {
-                        return data.end_date > format(new Date(), "yyyy-MM-dd") && <HabitCard habitData={data} key={index} setEditData={setEditData} showModal={showModal}/>
+                        return data.end_date >= format(new Date(), "yyyy-MM-dd") && <HabitCard habitData={data} key={index} setEditData={setEditData} showModal={showModal}/>
                     })
                 }
             </div>

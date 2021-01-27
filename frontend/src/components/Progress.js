@@ -126,9 +126,12 @@ export default function AllHabits () {
                 onChange={handleChange}
             >
                 {
-                    data.habits.map((habit) => 
-                        <Option value={habit.id}> {habit.name} </Option>
-                    )
+                    data.habits.map((habit) => {
+                        if(isBefore(new Date(),new Date(habit.end_date))){
+                            return (<Option value={habit.id}> {habit.name} </Option>);
+                        }
+                        return null;
+                    }) 
                 }
             </Select>
             <div style={{height:'30%', width:'70%'}}>
@@ -143,7 +146,7 @@ export default function AllHabits () {
                             onClick={(val)=>val && alert(val.count)}
                             tooltipDataAttrs={ (value) => {
                                 return {
-                                  'data-tip': (value.date) ? `date: ${value.date} and count is ${value.count}` : "incomplete",
+                                  'data-tip': (value.date) ? `date: ${value.date} and reps is ${value.count}` : "incomplete",
                                 };
                               }}
                               classForValue={value => {
